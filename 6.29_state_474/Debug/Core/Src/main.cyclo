@@ -1,0 +1,11 @@
+../Core/Src/main.c:60:6:register_short_callback	1
+../Core/Src/main.c:61:6:register_long_callback	1
+../Core/Src/main.c:62:6:register_double_callback	1
+../Core/Src/main.c:64:6:set_LED1	1
+../Core/Src/main.c:68:6:set_LED0	1
+../Core/Src/main.c:72:6:set_LED	1
+../Core/Src/main.c:78:6:bottoncheck	26
+../Core/Src/main.c:177:5:main	1
+../Core/Src/main.c:224:6:SystemClock_Config	3
+../Core/Src/main.c:265:13:MX_GPIO_Init	1
+../Core/Src/main.c:327:6:Error_Handler	1
