@@ -1,0 +1,11 @@
+../Core/Src/main.c:60:6:register_short_callback	16	static
+../Core/Src/main.c:61:6:register_long_callback	16	static
+../Core/Src/main.c:62:6:register_double_callback	16	static
+../Core/Src/main.c:64:6:set_LED1	8	static
+../Core/Src/main.c:68:6:set_LED0	8	static
+../Core/Src/main.c:72:6:set_LED	8	static
+../Core/Src/main.c:78:6:bottoncheck	16	static
+../Core/Src/main.c:177:5:main	8	static
+../Core/Src/main.c:224:6:SystemClock_Config	88	static
+../Core/Src/main.c:265:13:MX_GPIO_Init	48	static
+../Core/Src/main.c:327:6:Error_Handler	4	static,ignoring_inline_asm
