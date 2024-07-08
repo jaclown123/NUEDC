@@ -216,9 +216,10 @@ int main(void)
   LED_Init();
 
 
-  LED_Color color[16]={RED,RED};
+  LED_Color color[16]={PINK,PINK,PINK,PINK,PINK,PINK,PINK,PINK,PINK,PINK,PINK,PINK,PINK,PINK,PINK,PINK};
+  LED_Color red[16] = {1,1,1,1,1,1};
   RTC_TimeTypeDef * time;
-
+//LED_Display_Color(red);
   /* USER CODE END 2 */
 
   /* Infinite loop */
