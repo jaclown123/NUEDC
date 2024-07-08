@@ -46,7 +46,17 @@ extern "C" {
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
-
+typedef enum
+{
+  BLACK = 0U,
+  RED,
+  GREEN,
+  BLUE,
+  YELLOW,
+  PINK,
+  CYAN,
+  WHITE
+} LED_Color;
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
@@ -67,6 +77,9 @@ void Error_Handler(void);
 #define LED_SCK_GPIO_Port GPIOA
 #define LED_IN_RST_Pin GPIO_PIN_6
 #define LED_IN_RST_GPIO_Port GPIOA
+#define detect_Pin GPIO_PIN_0
+#define detect_GPIO_Port GPIOB
+#define detect_EXTI_IRQn EXTI0_1_IRQn
 
 /* USER CODE BEGIN Private defines */
 
