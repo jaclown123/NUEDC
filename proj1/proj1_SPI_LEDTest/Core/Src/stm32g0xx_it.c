@@ -49,6 +49,7 @@ double rad;
 #define theta_10left 27
 extern UART_HandleTypeDef huart1;
 extern LED_Color color[16] = {RED,RED};
+LED_Color digit[10][10][16] ;
 LED_Color digit_0[10][16] = {
       {0, 0, 0, 0, 0, 0, 1, 1 ,1, 1, 1, 1, 1, 1, 1, 0},
 	  {0, 0, 0, 0, 0, 1, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 1},
@@ -187,10 +188,45 @@ LED_Color digit_0[10][16] = {
 	  {0, 0, 0, 0, 0, 1, 0, 0 ,0, 0, 1, 0, 0, 0, 0, 1},
 	  {0, 0, 0, 0, 0, 0, 1, 1 ,1, 1, 1, 1, 1, 1, 1, 0}
   };
+  LED_Color digit[10][10][16] = {digit_0, digit_1, digit_2, digit_3, digit_4, digit_5, digit_6, digit_7, digit_8, digit_9};
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN TD */
+uint8_t theta_threshold[10][10] = 
+{
+	{
+		0, 3, 6, 9, 12, 15, 18, 21, 24, 27
+	},
+	{
+		3, 6, 9, 12, 15, 18, 21, 24, 27, 30
+	},
+	{
+		30, 33, 36, 39, 42, 45, 48, 51, 54, 57
+	},
+	{
+		33, 36, 39, 42, 45, 48, 51, 54, 57, 60
+	},
+	{
+		60, 63, 66, 69, 72, 75, 78, 81, 84, 87
+	},
+	{
+		63, 66, 69, 72, 75, 78, 81, 84, 87, 90
+	},
+	{
+		90, 93, 96, 99, 102, 105, 108, 111, 114, 117
+	},
+	{
+		93, 96, 99, 102, 105, 108, 111, 114, 117, 120
+	},
+	{
+		120, 123, 126, 129, 132, 135, 138, 141, 144, 147
+	},
+	{
+		123, 126, 129, 132, 135, 138, 141, 144, 147, 150
+	
+	}
+}
 void caculate_rad(int counter)
 {
 	rad = 360 / (counter);
@@ -199,47 +235,47 @@ void caculate_theta(void)
 {
 	theta = now_counter * rad;
 }
-void show_num(LED_Color ** num)
+void show_num(int i, int num)//i为希望在第几位显示，num为要显示的数 i = 0, 1, 2, 3, 4
 {
-	if (theta < theta_1right && theta > theta_1left)
+	if (theta < theta_threshold[2 * i + 1][0] && theta > theta_threshold[2 * i][0])
 	  {
-		  LED_Display_Color(num[0]);
+		  LED_Display_Color(digit[num][0]);
 	  }
-	  if (theta < theta_2right && theta > theta_2left)
+	  if (theta < theta_threshold[2 * i + 1][1] && theta > theta_threshold[2 * i][1])
 	    {
-	  	  LED_Display_Color(num[1]);
+	  	  LED_Display_Color(digit[num][1]);
 	    }
-	  if (theta < theta_3right && theta > theta_3left)
+	  if (theta < theta_threshold[2 * i + 1][2] && theta > theta_threshold[2 * i][2])
 	    {
-	  	  LED_Display_Color(num[2]);
+	  	  LED_Display_Color(digit[num][2]);
 	    }
-	  if (theta < theta_4right && theta > theta_4left)
+	  if (theta < theta_threshold[2 * i + 1][3] && theta > theta_threshold[2 * i][3])
 	    {
-	  	  LED_Display_Color(num[3]);
+	  	  LED_Display_Color(digit[num][3]);
 	    }
-	  if (theta < theta_5right && theta > theta_5left)
+	  if (theta < theta_threshold[2 * i + 1][4] && theta > theta_threshold[2 * i][4])
 	    {
-	  	  LED_Display_Color(num[4]);
+	  	  LED_Display_Color(digit[num][4]);
 	    }
-	  if (theta < theta_6right && theta > theta_6left)
+	  if (theta < theta_threshold[2 * i + 1][5] && theta > theta_threshold[2 * i][5])
 	    {
-	  	  LED_Display_Color(num[5]);
+	  	  LED_Display_Color(digit[num][5]);
 	    }
-	  if (theta < theta_7right && theta > theta_7left)
+	  if (theta < theta_threshold[2 * i + 1][6] && theta > theta_threshold[2 * i][6])
 	    {
-	  	  LED_Display_Color(num[6]);
+	  	  LED_Display_Color(digit[num][6]);
 	    }
-	  if (theta < theta_8right && theta > theta_8left)
+	  if (theta < theta_threshold[2 * i + 1][7] && theta > theta_threshold[2 * i][1])
 	    {
-	  	  LED_Display_Color(num[7]);
+	  	  LED_Display_Color(digit[num][7]);
 	    }
-	  if (theta < theta_9right && theta > theta_9left)
+	  if (theta < theta_threshold[2 * i + 1][8] && theta > theta_threshold[2 * i][8])
 	    {
-	  	  LED_Display_Color(num[8]);
+	  	  LED_Display_Color(digit[num][8]);
 	    }
-	  if (theta < theta_10right && theta > theta_10left)
+	  if (theta < theta_threshold[2 * i + 1][9] && theta > theta_threshold[2 * i][9])
 	    {
-	  	  LED_Display_Color(num[9]);
+	  	  LED_Display_Color(digit[num][9]);
 	    }
 }
 /* USER CODE END TD */
@@ -357,10 +393,10 @@ void SysTick_Handler(void)
   /* USER CODE END SysTick_IRQn 0 */
   HAL_IncTick();
   /* USER CODE BEGIN SysTick_IRQn 1 */
-//  now_counter++;
-//
-//  caculate_theta();
-//  show_num(digit_0);
+ now_counter++;
+
+ caculate_theta();
+ show_num(digit_0);
   /* USER CODE END SysTick_IRQn 1 */
 }
 
@@ -381,7 +417,7 @@ void EXTI0_1_IRQHandler(void)
   /* USER CODE END EXTI0_1_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(detect_Pin);
   /* USER CODE BEGIN EXTI0_1_IRQn 1 */
-  LED_Display_Color(color);
+  //LED_Display_Color(color);
   /* USER CODE END EXTI0_1_IRQn 1 */
 }
 
