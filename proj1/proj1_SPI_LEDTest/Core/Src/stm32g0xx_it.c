@@ -27,6 +27,7 @@ int counter = 0;//转完�??圈的时间
 int now_counter = 0;//现在的时�??
 int theta;
 int rad;
+int row = 0;
 #define theta_1right 3
 #define theta_2right 6
 #define theta_3right 9
@@ -49,7 +50,8 @@ int rad;
 #define theta_10left 27
 extern UART_HandleTypeDef huart1;
 extern LED_Color color[16] = {RED,RED};
-extern LED_Color close[16] = {0};
+extern LED_Color close[16] = {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+uint8_t flag_flag = 0;
 LED_Color digit[10][10][16] =
 {
     {
@@ -225,6 +227,7 @@ void show_num(int i, int num)//i为希望在第几位显示，num为要显示的
 	if (theta <= theta_threshold[2 * i + 1][0] && theta > theta_threshold[2 * i][0])
 	  {
 		  LED_Display_Color(digit[num][0]);
+
 	  }
 	  else if (theta <= theta_threshold[2 * i + 1][1] && theta > theta_threshold[2 * i][1])
 	    {
@@ -282,6 +285,8 @@ void HAL_GPIO_EXTI_Falling_Callback(uint16_t GPIO_Pin)
 		counter = now_counter;
 		caculate_rad(counter);
 		now_counter = 0;
+		flag_flag = 0;
+		row = 0;
 	}
 }
 /* USER CODE END PD */
@@ -379,14 +384,32 @@ void SysTick_Handler(void)
   /* USER CODE BEGIN SysTick_IRQn 0 */
 
   /* USER CODE END SysTick_IRQn 0 */
-  HAL_IncTick();
+ HAL_IncTick();
   /* USER CODE BEGIN SysTick_IRQn 1 */
  now_counter++;
-
+ 
  caculate_theta();
- show_num(0, 1);
- show_num(1, 2);
- show_num(4, 5);
+ if (flag_flag == 0 && theta >0 && theta <=30)
+ {
+	flag_flag = 1;
+ }
+ if (flag_flag == 1)
+ {
+	if (row < 10)
+	{
+		LED_Display_Color(digit[0][row]);
+		row++;
+	}
+	else
+	{
+		LED_Display_Color(close);
+	}
+
+ }
+//  show_num(0, 1);
+//  show_num(1, 2);
+//  show_num(4, 5);
+
   /* USER CODE END SysTick_IRQn 1 */
 }
 
