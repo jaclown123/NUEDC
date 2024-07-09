@@ -8,11 +8,9 @@
 ../Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_uart_ex.c:501:19:HAL_UARTEx_DisableStopMode	2
 ../Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_uart_ex.c:520:19:HAL_UARTEx_EnableFifoMode	2
 ../Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_uart_ex.c:561:19:HAL_UARTEx_DisableFifoMode	2
-../Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_uart_ex.c:607:19:HAL_UARTEx_SetTxFifoThreshold	2
-../Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_uart_ex.c:656:19:HAL_UARTEx_SetRxFifoThreshold	2
-../Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_uart_ex.c:718:19:HAL_UARTEx_ReceiveToIdle	23
+../Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_uart_ex.c:607:19:HAL_UARTEx_SetTxFifoThreshold	3
+../Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_uart_ex.c:656:19:HAL_UARTEx_SetRxFifoThreshold	3
+../Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_uart_ex.c:718:19:HAL_UARTEx_ReceiveToIdle	30
 ../Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_uart_ex.c:857:19:HAL_UARTEx_ReceiveToIdle_IT	8
 ../Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_uart_ex.c:930:19:HAL_UARTEx_ReceiveToIdle_DMA	9
 ../Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_uart_ex.c:1009:29:HAL_UARTEx_GetRxEventType	1
-../Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_uart_ex.c:1033:13:UARTEx_Wakeup_AddressConfig	1
-../Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_uart_ex.c:1051:13:UARTEx_SetNbDataToProcess	2
