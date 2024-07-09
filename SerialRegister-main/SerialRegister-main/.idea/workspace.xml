@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="a2b53eb3-14c9-4016-b06a-c2cce96dd6fb" name="更改" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/SerialRegister-main.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Jupyter/example.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Jupyter/example.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Jupyter/test.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Jupyter/test.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Jupyter/tim2_start.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Jupyter/tim2_start.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../uartchange_test/.settings/language.settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../uartchange_test/.settings/language.settings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../uartchange_test/.settings/stm32cubeide.project.prefs" beforeDir="false" afterPath="$PROJECT_DIR$/../../uartchange_test/.settings/stm32cubeide.project.prefs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../uartchange_test/Debug/Core/Src/main.o" beforeDir="false" afterPath="$PROJECT_DIR$/../../uartchange_test/Debug/Core/Src/main.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../uartchange_test/Debug/Core/Src/stm32g4xx_hal_msp.o" beforeDir="false" afterPath="$PROJECT_DIR$/../../uartchange_test/Debug/Core/Src/stm32g4xx_hal_msp.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../uartchange_test/Debug/Core/Src/stm32g4xx_it.o" beforeDir="false" afterPath="$PROJECT_DIR$/../../uartchange_test/Debug/Core/Src/stm32g4xx_it.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../uartchange_test/Debug/Core/Src/subdir.mk" beforeDir="false" afterPath="$PROJECT_DIR$/../../uartchange_test/Debug/Core/Src/subdir.mk" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../uartchange_test/Debug/Core/Src/syscalls.o" beforeDir="false" afterPath="$PROJECT_DIR$/../../uartchange_test/Debug/Core/Src/syscalls.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../uartchange_test/Debug/Core/Src/sysmem.o" beforeDir="false" afterPath="$PROJECT_DIR$/../../uartchange_test/Debug/Core/Src/sysmem.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../uartchange_test/Debug/Core/Src/system_stm32g4xx.o" beforeDir="false" afterPath="$PROJECT_DIR$/../../uartchange_test/Debug/Core/Src/system_stm32g4xx.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../uartchange_test/Debug/Core/Src/uart_reg.o" beforeDir="false" afterPath="$PROJECT_DIR$/../../uartchange_test/Debug/Core/Src/uart_reg.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../uartchange_test/Debug/Core/Startup/startup_stm32g474retx.o" beforeDir="false" afterPath="$PROJECT_DIR$/../../uartchange_test/Debug/Core/Startup/startup_stm32g474retx.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../uartchange_test/Debug/Core/Startup/subdir.mk" beforeDir="false" afterPath="$PROJECT_DIR$/../../uartchange_test/Debug/Core/Startup/subdir.mk" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../uartchange_test/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal.o" beforeDir="false" afterPath="$PROJECT_DIR$/../../uartchange_test/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../uartchange_test/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_cortex.o" beforeDir="false" afterPath="$PROJECT_DIR$/../../uartchange_test/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_cortex.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../uartchange_test/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_crc.o" beforeDir="false" afterPath="$PROJECT_DIR$/../../uartchange_test/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_crc.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../uartchange_test/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_crc_ex.o" beforeDir="false" afterPath="$PROJECT_DIR$/../../uartchange_test/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_crc_ex.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../uartchange_test/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_dma.o" beforeDir="false" afterPath="$PROJECT_DIR$/../../uartchange_test/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_dma.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../uartchange_test/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_dma_ex.o" beforeDir="false" afterPath="$PROJECT_DIR$/../../uartchange_test/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_dma_ex.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../uartchange_test/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_exti.o" beforeDir="false" afterPath="$PROJECT_DIR$/../../uartchange_test/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_exti.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../uartchange_test/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_flash.o" beforeDir="false" afterPath="$PROJECT_DIR$/../../uartchange_test/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_flash.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../uartchange_test/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_flash_ex.o" beforeDir="false" afterPath="$PROJECT_DIR$/../../uartchange_test/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_flash_ex.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../uartchange_test/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_flash_ramfunc.o" beforeDir="false" afterPath="$PROJECT_DIR$/../../uartchange_test/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_flash_ramfunc.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../uartchange_test/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_gpio.o" beforeDir="false" afterPath="$PROJECT_DIR$/../../uartchange_test/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_gpio.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../uartchange_test/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_pwr.o" beforeDir="false" afterPath="$PROJECT_DIR$/../../uartchange_test/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_pwr.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../uartchange_test/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_pwr_ex.o" beforeDir="false" afterPath="$PROJECT_DIR$/../../uartchange_test/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_pwr_ex.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../uartchange_test/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_rcc.o" beforeDir="false" afterPath="$PROJECT_DIR$/../../uartchange_test/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_rcc.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../uartchange_test/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_rcc_ex.o" beforeDir="false" afterPath="$PROJECT_DIR$/../../uartchange_test/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_rcc_ex.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../uartchange_test/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_tim.o" beforeDir="false" afterPath="$PROJECT_DIR$/../../uartchange_test/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_tim.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../uartchange_test/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_tim_ex.o" beforeDir="false" afterPath="$PROJECT_DIR$/../../uartchange_test/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_tim_ex.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../uartchange_test/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_uart.o" beforeDir="false" afterPath="$PROJECT_DIR$/../../uartchange_test/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_uart.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../uartchange_test/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_uart_ex.o" beforeDir="false" afterPath="$PROJECT_DIR$/../../uartchange_test/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_uart_ex.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../uartchange_test/Debug/Drivers/STM32G4xx_HAL_Driver/Src/subdir.mk" beforeDir="false" afterPath="$PROJECT_DIR$/../../uartchange_test/Debug/Drivers/STM32G4xx_HAL_Driver/Src/subdir.mk" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../uartchange_test/Debug/makefile" beforeDir="false" afterPath="$PROJECT_DIR$/../../uartchange_test/Debug/makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../uartchange_test/Debug/sources.mk" beforeDir="false" afterPath="$PROJECT_DIR$/../../uartchange_test/Debug/sources.mk" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../uartchange_test/Debug/uartchange_test.elf" beforeDir="false" afterPath="$PROJECT_DIR$/../../uartchange_test/Debug/uartchange_test.elf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../uartchange_test/Debug/uartchange_test.list" beforeDir="false" afterPath="$PROJECT_DIR$/../../uartchange_test/Debug/uartchange_test.list" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../uartchange_test/Debug/uartchange_test.map" beforeDir="false" afterPath="$PROJECT_DIR$/../../uartchange_test/Debug/uartchange_test.map" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FlaskConsoleOptions" custom-start-script="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))">
+    <envs>
+      <env key="FLASK_APP" value="app" />
+    </envs>
+    <option name="myCustomStartScript" value="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))" />
+    <option name="myEnvs">
+      <map>
+        <entry key="FLASK_APP" value="app" />
+      </map>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1
+}</component>
+  <component name="ProjectId" id="2ijRD0WzdTi7q3JrKnLbtli53GU" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-PY-241.18034.82" />
+        <option value="bundled-python-sdk-975db3bf15a3-2767605e8bc2-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-241.18034.82" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="默认任务">
+      <changelist id="a2b53eb3-14c9-4016-b06a-c2cce96dd6fb" name="更改" comment="" />
+      <created>1720001877578</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1720001877578</updated>
+      <workItem from="1720001878907" duration="1535000" />
+      <workItem from="1720003485772" duration="163000" />
+      <workItem from="1720003668674" duration="511000" />
+      <workItem from="1720004194558" duration="1340000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+  </component>
+</project>
