@@ -23,11 +23,12 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 extern void LED_Display_Color(LED_Color * Color_Input);
-int counter = 0;//转完�?????圈的时间
-int now_counter = 0;//现在的时�?????
-int theta;
-int rad;
+extern int counter;
+extern int now_counter;
+extern int theta;
+extern int rad;
 int second = 0;
+int flow = 0;
 
 #define theta_1right 3
 #define theta_2right 6
@@ -50,14 +51,15 @@ int second = 0;
 #define theta_9left 24
 #define theta_10left 27
 extern UART_HandleTypeDef huart1;
-extern LED_Color color[16] = {RED,RED};
-extern LED_Color close[16] = {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+extern LED_Color color[16] ;
+extern LED_Color close[16] ;
 //uint8_t flag_1 = 0;
 //int row = 0;
-uint8_t flag[6] = {0};
-int row[6] = {0};
+extern uint8_t flag[6];
+extern int row[6];
 
 int number[6] = {1,7,4,5,3,0};
+int flow_number = 0;
 LED_Color digit[10][10][16] =
 {
     {//0
@@ -95,17 +97,6 @@ LED_Color digit[10][10][16] =
 	  {0, 0, 0, 0, 0, 1, 1, 0 ,0, 0, 1, 1 ,1, 1, 1, 1},
 	  {0, 0, 0, 0, 0, 1, 1, 0 ,0, 0, 0, 0, 0, 0, 0, 0},
 	  {0, 0, 0, 0, 0, 1, 1, 0 ,0, 0, 0, 0, 0, 0, 0, 0},
-
-//	  {0, 0, 0, 0, 0, 1, 1, 1 ,1, 0, 0, 0, 0, 0, 0, 0},
-//	  {0, 0, 0, 0, 0, 1, 0, 0 ,0, 1, 1, 0, 0, 0, 0, 0},
-//	  {0, 0, 0, 0, 0, 1, 0, 0 ,0, 0, 1, 0, 0, 0, 0, 1},
-//	  {0, 0, 0, 0, 0, 1, 0, 0 ,0, 0, 1, 0, 0, 0, 0, 1},
-//	  {0, 0, 0, 0, 0, 1, 0, 0 ,0, 0, 1, 0, 0, 0, 0, 1},
-//	  {0, 0, 0, 0, 0, 1, 0, 0 ,0, 0, 1, 0, 0, 0, 0, 1},
-//	  {0, 0, 0, 0, 0, 1, 0, 0 ,0, 0, 1, 0 ,0, 0, 0, 1},
-//	  {0, 0, 0, 0, 0, 1, 0, 0 ,0, 0, 1, 1 ,1, 1, 1, 1},
-//	  {0, 0, 0, 0, 0, 1, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0},
-//	  {0, 0, 0, 0, 0, 1, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0},
     },
     {//3
 	  {0, 0, 0, 0, 0, 1, 1, 0 ,0, 0, 0, 0, 0, 0, 0, 0},
@@ -120,7 +111,7 @@ LED_Color digit[10][10][16] =
 	  {0, 0, 0, 0, 0, 1, 1, 1 ,1, 0, 0, 0, 0, 0, 0, 0},
     },
     {//4
-  	  {0, 0, 0, 0, 0, 0, 0, 0 ,0, 1, 1, 1, 1, 0, 0, 0},
+  	  {0, 0, 0, 0, 0, 0, 0, 0 ,0, 1, 1, 1, 0, 0, 0, 0},
 	  {0, 0, 0, 0, 0, 0, 0, 0 ,0, 1, 1, 1, 1, 1, 1, 1},
       {0, 0, 0, 0, 0, 0, 0, 0 ,0, 1, 1, 0, 0, 1, 1, 1},
 	  {0, 0, 0, 0, 0, 0, 0, 0 ,0, 1, 1, 0, 0, 0, 0, 0},
@@ -158,11 +149,11 @@ LED_Color digit[10][10][16] =
     {//7
       {0, 0, 0, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0},
   	  {0, 0, 0, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0},
+  	  {0, 0, 0, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 1, 1, 1},
   	  {0, 0, 0, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 1, 1},
-  	  {0, 0, 0, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 1},
-  	  {0, 0, 0, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 1},
-  	  {0, 0, 0, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 1},
-  	  {0, 0, 0, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 1},
+  	  {0, 0, 0, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 1, 1},
+  	  {0, 0, 0, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 1, 1},
+  	  {0, 0, 0, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 1, 1},
   	  {0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
   	  {0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
   	  {0, 0, 0, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0}
@@ -231,14 +222,8 @@ uint8_t theta_threshold[10][10] =
 	
 	}
 };
-void caculate_rad(int counter)
-{
-	rad = 360 / (counter);
-}
-void caculate_theta(void)
-{
-	theta = now_counter * rad;
-}
+extern void caculate_rad(int counter);
+extern void caculate_theta(void);
 void show_num(int i, int num)//i为希望在第几位显示，num为要显示的数 i = 0, 1, 2, 3, 4
 {
 	if (theta <= theta_threshold[2 * i + 1][0] && theta > theta_threshold[2 * i][0])
@@ -291,26 +276,25 @@ void show_num(int i, int num)//i为希望在第几位显示，num为要显示的
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-void HAL_GPIO_EXTI_Falling_Callback(uint16_t GPIO_Pin)
-{
-	if (GPIO_Pin != detect_Pin)
-	{
-		return;
-	}
-	if (now_counter > 1)
-	{
-		counter = now_counter;
-		caculate_rad(counter);
-		now_counter = 0;
-//		flag_1 = 0;
-//		row = 0;
-		for(int i = 0;i < 6;i++)
-		{
-			flag[i] = 0;
-			row[i] = 0;
-		}
-	}
-}
+//void HAL_GPIO_EXTI_Falling_Callback(uint16_t GPIO_Pin)
+//{
+//	if (GPIO_Pin != detect_Pin)
+//	{
+//		return;
+//	}
+//	if (now_counter > 1)
+//	{
+//		counter = now_counter;
+//		caculate_rad(counter);
+//		now_counter = 0;
+//
+//		for(int i = 0;i < 6;i++)
+//		{
+//			flag[i] = 0;
+//			row[i] = 0;
+//		}
+//	}
+//}
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -409,14 +393,19 @@ void SysTick_Handler(void)
   HAL_IncTick();
   /* USER CODE BEGIN SysTick_IRQn 1 */
   now_counter++;
- 
   caculate_theta();
   second ++;
+  //flow ++;
   if(second == 1000)
   {
 	  second = 0;
 	  number[5] ++;
   }
+  /*if(flow == 50)
+  {
+	  flow = 0;
+  	  flow_number ++;
+  }*/
   if(number[5] == 10)
   {
 	  number[5] = 0;
@@ -433,8 +422,6 @@ void SysTick_Handler(void)
   	  number[2] ++;
   }
 //  show_num(0, 1);
-//  show_num(1, 2);
-//  show_num(4, 5);
 
   /* USER CODE END SysTick_IRQn 1 */
 }
@@ -447,20 +434,6 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /**
-  * @brief This function handles EXTI line 0 and line 1 interrupts.
-  */
-void EXTI0_1_IRQHandler(void)
-{
-  /* USER CODE BEGIN EXTI0_1_IRQn 0 */
-
-  /* USER CODE END EXTI0_1_IRQn 0 */
-  HAL_GPIO_EXTI_IRQHandler(detect_Pin);
-  /* USER CODE BEGIN EXTI0_1_IRQn 1 */
-  //LED_Display_Color(color);
-  /* USER CODE END EXTI0_1_IRQn 1 */
-}
-
-/**
   * @brief This function handles TIM1 break, update, trigger and commutation interrupts.
   */
 void TIM1_BRK_UP_TRG_COM_IRQHandler(void)
@@ -471,28 +444,15 @@ void TIM1_BRK_UP_TRG_COM_IRQHandler(void)
   HAL_TIM_IRQHandler(&htim1);
   /* USER CODE BEGIN TIM1_BRK_UP_TRG_COM_IRQn 1 */
 
-//  if (flag_1 == 0 && theta >0 && theta <=30)
-//   {
-//  	flag_1 = 1;
-//   }
-//   if (flag_1 == 1)
-//   {
-//  	if (row < 10)
-//  	{
-//  		LED_Display_Color(digit[8][row]);
-//  		row++;
-//  	}
-//
-//  	else
-//  	{
-//  		LED_Display_Color(close);
-//  	}
-//   }
 
+  if(flow_number == 360) flow_number = 0;
   for (int i = 0;i < 6;i++)
   {
-	  if(flag[i] == 0 && theta > 48 * i && theta <= 48 * i +45) flag[i] = 1;
-	  if(flag[i] == 1 && (theta <= 48 * i || theta > 48 * i + 45))
+	  if(flag[i] == 0 && now_counter > 6 * i && now_counter <= 6 * i + 5) flag[i] = 1;
+	  //if(flag[i] == 0 && theta > (48 * i + flow_number) && theta <= (48 * i + 48 + flow_number))
+	  //    flag[i] = 1;
+	  //if(flag[i] == 1 && (theta <= (48 * i + flow_number) || theta > (48 * i + 48 + flow_number)))
+	  if(flag[i] == 1 && (now_counter <= 6 * i || now_counter > 6 * i + 5))
 	  {
 		  flag[i] = 0;
 		  LED_Display_Color(close);
@@ -510,7 +470,6 @@ void TIM1_BRK_UP_TRG_COM_IRQHandler(void)
 		}
 	  }
   }
-
   /* USER CODE END TIM1_BRK_UP_TRG_COM_IRQn 1 */
 }
 

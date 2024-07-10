@@ -60,13 +60,23 @@ static void MX_RTC_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_TIM1_Init(void);
 /* USER CODE BEGIN PFP */
-void LED_Init(){
+uint8_t flag[6] = {0};
+int row[6] = {0};
+int counter ;//转完1圈的时间
+int atime ;
+int now_counter;//现在的时间
+int theta = 0;
+int rad = 0;
+LED_Color color[16] = {RED,RED};
+LED_Color close[16] = {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+void LED_Init()
+{
   HAL_GPIO_WritePin(LED_IN_RST_GPIO_Port,LED_IN_RST_Pin,GPIO_PIN_SET);
   HAL_GPIO_WritePin(LED_OUT_EN_GPIO_Port,LED_OUT_EN_Pin,GPIO_PIN_RESET);
-
 }
 
-void Input_Fix(GPIO_PinState * Input_Data) {
+void Input_Fix(GPIO_PinState * Input_Data)
+{
   for (int i=7;i<=47;i=i+8) {
     for (int j=0;j<=2;j++) {
       GPIO_PinState temp=Input_Data[j+i-7];
@@ -76,10 +86,10 @@ void Input_Fix(GPIO_PinState * Input_Data) {
   }
 }
 
-void Generate_Bytes(uint8_t * Input_Bits,uint8_t* Bytes){
-
+void Generate_Bytes(uint8_t * Input_Bits,uint8_t* Bytes)
+{
   for (int byte_index=0;byte_index<6;byte_index++) {
-    for (int i=0;i<8;i++) {
+    for (int i = 0;i < 8;i++) {
       switch(Input_Bits[byte_index*8+i]) {
       case 0:{
 
@@ -97,7 +107,7 @@ void Generate_Bytes(uint8_t * Input_Bits,uint8_t* Bytes){
 void LED_Display_6Byte_SPI(GPIO_PinState * Input_Data) {
   Input_Fix(Input_Data);
   uint8_t Input_Byte[6]={0};
- Generate_Bytes(Input_Data,Input_Byte);
+  Generate_Bytes(Input_Data,Input_Byte);
 
   HAL_GPIO_WritePin(LED_OUT_CLK_GPIO_Port,LED_OUT_CLK_Pin,GPIO_PIN_RESET);
   HAL_SPI_Transmit(&hspi1,Input_Byte, 6, 1);
@@ -176,6 +186,16 @@ void LED_Display_Color(LED_Color * Color_Input) {
   }
   LED_Display_6Byte_SPI(Color_Bytes);
 }
+void caculate_rad(int counter)
+{
+	rad = 360 / (counter);
+	//atime = counter;
+}
+void caculate_theta(void)
+{
+	theta = now_counter * rad;
+}
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -228,15 +248,31 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  static int prev = 0;
+
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    //LED_Display_Color(color);
-	 // HAL_RTC_GetTime(&hrtc, time, RTC_FORMAT_BIN);
+	// HAL_RTC_GetTime(&hrtc, time, RTC_FORMAT_BIN);
 
-	  //HAL_UART_Transmit(&huart1, time->Hours, 1, 10);
+	int curr = (HAL_GPIO_ReadPin(detect_GPIO_Port, detect_Pin));
+	if (prev == 1 && curr == 0)
+	{
+		if (now_counter > 1)
+		{
+			counter = now_counter;
+			//caculate_rad(counter);
+			now_counter = 0;
+			for(int i = 0;i < 6;i++)
+			{
+				flag[i] = 0;
+				row[i] = 0;
+			}
+		}
+	}
+	prev = curr;
   }
   /* USER CODE END 3 */
 }
@@ -419,7 +455,7 @@ static void MX_TIM1_Init(void)
   htim1.Instance = TIM1;
   htim1.Init.Prescaler = 15;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim1.Init.Period = 499;
+  htim1.Init.Period = 498;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim1.Init.RepetitionCounter = 0;
   htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
@@ -521,13 +557,9 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin : detect_Pin */
   GPIO_InitStruct.Pin = detect_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(detect_GPIO_Port, &GPIO_InitStruct);
-
-  /* EXTI interrupt init*/
-  HAL_NVIC_SetPriority(EXTI0_1_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(EXTI0_1_IRQn);
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */
 /* USER CODE END MX_GPIO_Init_2 */
