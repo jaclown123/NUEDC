@@ -263,7 +263,7 @@ int main(void)
 		if (now_counter > 1)
 		{
 			counter = now_counter;
-			//caculate_rad(counter);
+			caculate_rad(counter);
 			now_counter = 0;
 			for(int i = 0;i < 6;i++)
 			{
