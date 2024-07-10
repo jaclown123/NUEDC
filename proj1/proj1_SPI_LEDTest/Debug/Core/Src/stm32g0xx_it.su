@@ -1,0 +1,7 @@
+../Core/Src/stm32g0xx_it.c:231:6:show_num	24	static
+../Core/Src/stm32g0xx_it.c:336:6:NMI_Handler	0	static
+../Core/Src/stm32g0xx_it.c:351:6:HardFault_Handler	0	static
+../Core/Src/stm32g0xx_it.c:366:6:SVC_Handler	0	static
+../Core/Src/stm32g0xx_it.c:379:6:PendSV_Handler	0	static
+../Core/Src/stm32g0xx_it.c:392:6:SysTick_Handler	16	static
+../Core/Src/stm32g0xx_it.c:471:6:TIM1_BRK_UP_TRG_COM_IRQHandler	32	static

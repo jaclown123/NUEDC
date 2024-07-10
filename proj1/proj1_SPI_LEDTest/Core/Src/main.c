@@ -65,8 +65,12 @@ int row[6] = {0};
 int counter ;//转完1圈的时间
 int atime ;
 int now_counter;//现在的时间
+int run_counter;
 int theta = 0;
 int rad = 0;
+int newflag = 0;
+int max_counter = 0;
+int cnt;
 LED_Color color[16] = {RED,RED};
 LED_Color close[16] = {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 void LED_Init()
@@ -260,20 +264,26 @@ int main(void)
 	int curr = (HAL_GPIO_ReadPin(detect_GPIO_Port, detect_Pin));
 	if (prev == 1 && curr == 0)
 	{
-		if (now_counter > 1)
-		{
-			counter = now_counter;
-			caculate_rad(counter);
-			now_counter = 0;
-			for(int i = 0;i < 6;i++)
-			{
-				flag[i] = 0;
-				row[i] = 0;
-			}
-		}
+		cnt ++;
+		newflag = 1;
+		counter = now_counter;
+		now_counter = 0;
+
+//		if (now_counter > 1)
+//		{
+//			counter = now_counter;
+//			caculate_rad(counter);
+//			now_counter = 0;
+//			for(int i = 0;i < 6;i++)
+//			{
+//				flag[i] = 0;
+//				row[i] = 0;
+//			}
+//		}
 	}
 	prev = curr;
   }
+  if(cnt >= 60000) cnt = 1001;
   /* USER CODE END 3 */
 }
 

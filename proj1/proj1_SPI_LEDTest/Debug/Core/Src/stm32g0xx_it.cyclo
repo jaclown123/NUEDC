@@ -1,7 +1,7 @@
-../Core/Src/stm32g0xx_it.c:227:6:show_num	21
-../Core/Src/stm32g0xx_it.c:332:6:NMI_Handler	1
-../Core/Src/stm32g0xx_it.c:347:6:HardFault_Handler	1
-../Core/Src/stm32g0xx_it.c:362:6:SVC_Handler	1
-../Core/Src/stm32g0xx_it.c:375:6:PendSV_Handler	1
-../Core/Src/stm32g0xx_it.c:388:6:SysTick_Handler	6
-../Core/Src/stm32g0xx_it.c:439:6:TIM1_BRK_UP_TRG_COM_IRQHandler	11
+../Core/Src/stm32g0xx_it.c:231:6:show_num	21
+../Core/Src/stm32g0xx_it.c:336:6:NMI_Handler	1
+../Core/Src/stm32g0xx_it.c:351:6:HardFault_Handler	1
+../Core/Src/stm32g0xx_it.c:366:6:SVC_Handler	1
+../Core/Src/stm32g0xx_it.c:379:6:PendSV_Handler	1
+../Core/Src/stm32g0xx_it.c:392:6:SysTick_Handler	9
+../Core/Src/stm32g0xx_it.c:471:6:TIM1_BRK_UP_TRG_COM_IRQHandler	11
