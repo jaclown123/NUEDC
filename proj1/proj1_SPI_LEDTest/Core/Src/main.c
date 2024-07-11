@@ -69,6 +69,7 @@ int run_counter;
 int theta = 0;
 int rad = 0;
 int newflag = 0;
+int newflag2 = 0;
 int max_counter = 0;
 int cnt;
 LED_Color color[16] = {RED,RED};
@@ -268,7 +269,7 @@ int main(void)
 		newflag = 1;
 		counter = now_counter;
 		now_counter = 0;
-
+		newflag2 = 1;
 //		if (now_counter > 1)
 //		{
 //			counter = now_counter;
