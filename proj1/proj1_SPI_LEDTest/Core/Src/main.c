@@ -194,7 +194,6 @@ void LED_Display_Color(LED_Color * Color_Input) {
 void caculate_rad(int counter)
 {
 	rad = 360 / (counter);
-	//atime = counter;
 }
 void caculate_theta(void)
 {
