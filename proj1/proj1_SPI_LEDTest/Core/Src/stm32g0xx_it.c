@@ -426,9 +426,8 @@ void SysTick_Handler(void)
   	  number[2] ++;
   }
 
-
-    if (newflag && cnt >= 50)
-    {
+  if (newflag && cnt >= 50)
+  {
       if(counter >= max_counter) max_counter = counter;
   	  if(max_counter <= counter)
   	  {
@@ -453,8 +452,8 @@ void SysTick_Handler(void)
   	  }
   	  else if(max_counter > counter)
     	  delta ++;
-    }
-    run_counter ++;
+  }
+  run_counter ++;
   /* USER CODE END SysTick_IRQn 1 */
 }
 
@@ -475,7 +474,6 @@ void TIM1_BRK_UP_TRG_COM_IRQHandler(void)
   /* USER CODE END TIM1_BRK_UP_TRG_COM_IRQn 0 */
   HAL_TIM_IRQHandler(&htim1);
   /* USER CODE BEGIN TIM1_BRK_UP_TRG_COM_IRQn 1 */
-
 
   if(flow_number == 360) flow_number = 0;
   for (int i = 0;i < 6;i++)
