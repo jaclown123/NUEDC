@@ -4,7 +4,7 @@
 ../Core/Src/main.c:112:6:LED_Display_6Byte_SPI	48	static
 ../Core/Src/main.c:135:6:LED_Display_Color	64	static
 ../Core/Src/main.c:194:6:caculate_rad	8	static
-../Core/Src/main.c:199:6:caculate_theta	0	static
-../Core/Src/main.c:295:6:SystemClock_Config	80	static,ignoring_inline_asm
-../Core/Src/main.c:215:5:main	80	static,ignoring_inline_asm
-../Core/Src/main.c:587:6:Error_Handler	0	static,ignoring_inline_asm
+../Core/Src/main.c:198:6:caculate_theta	0	static
+../Core/Src/main.c:294:6:SystemClock_Config	80	static,ignoring_inline_asm
+../Core/Src/main.c:214:5:main	80	static,ignoring_inline_asm
+../Core/Src/main.c:586:6:Error_Handler	0	static,ignoring_inline_asm

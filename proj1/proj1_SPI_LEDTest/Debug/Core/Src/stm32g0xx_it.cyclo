@@ -4,4 +4,4 @@
 ../Core/Src/stm32g0xx_it.c:537:6:SVC_Handler	1
 ../Core/Src/stm32g0xx_it.c:550:6:PendSV_Handler	1
 ../Core/Src/stm32g0xx_it.c:563:6:SysTick_Handler	13
-../Core/Src/stm32g0xx_it.c:652:6:TIM1_BRK_UP_TRG_COM_IRQHandler	19
+../Core/Src/stm32g0xx_it.c:653:6:TIM1_BRK_UP_TRG_COM_IRQHandler	19
