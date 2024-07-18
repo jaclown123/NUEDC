@@ -60,8 +60,8 @@ all: main-build
 main-build: proj1_SPI_LEDTest.elf secondary-outputs
 
 # Tool invocations
-proj1_SPI_LEDTest.elf proj1_SPI_LEDTest.map: $(OBJS) $(USER_OBJS) D:\GitHub\NUEDC\proj1\proj1_SPI_LEDTest\STM32G030K8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "proj1_SPI_LEDTest.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0plus -T"D:\GitHub\NUEDC\proj1\proj1_SPI_LEDTest\STM32G030K8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="proj1_SPI_LEDTest.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+proj1_SPI_LEDTest.elf proj1_SPI_LEDTest.map: $(OBJS) $(USER_OBJS) C:\Users\linyixin\Documents\GitHub\NUEDC\proj1\proj1_SPI_LEDTest\STM32G030K8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "proj1_SPI_LEDTest.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0plus -T"C:\Users\linyixin\Documents\GitHub\NUEDC\proj1\proj1_SPI_LEDTest\STM32G030K8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="proj1_SPI_LEDTest.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
