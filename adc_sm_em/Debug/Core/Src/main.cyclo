@@ -1,0 +1,8 @@
+../Core/Src/main.c:78:6:gpio_handler	3
+../Core/Src/main.c:130:6:spi_handler	3
+../Core/Src/main.c:162:6:i2c_handler	5
+../Core/Src/main.c:190:6:HAL_ADC_ConvCpltCallback	2
+../Core/Src/main.c:201:6:split	1
+../Core/Src/main.c:300:6:SystemClock_Config	3
+../Core/Src/main.c:221:5:main	16
+../Core/Src/main.c:707:6:Error_Handler	1
