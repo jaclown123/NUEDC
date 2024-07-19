@@ -16,13 +16,13 @@ float ic_fitting(uint32_t times[], uint16_t size)
 {
   MatrixXf A(size, 2);
   A.col(0).setConstant(1.f);
-  A.col(1).setLinSpaced(-1.f, 1.f);
+  A.col(1).setLinSpaced(-1.f,1.f);
 
   VectorXf b(size);
-  std::transform(times, times + size, b.begin(), [](float f) { return f /65536 *1e6; });
+  std::transform(times, times + size, b.begin(), [](float f) { return f /65536 ; });
 
   Vector2f x = A.colPivHouseholderQr().solve(b);
-  auto cyc = x(1) / (size-1) * 2  * 65536 / 1e6;
+  auto cyc = x(1) / (size-1) * 2  * 65536 ;
   return cyc;
 }
 

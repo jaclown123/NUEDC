@@ -17,11 +17,11 @@
 ../Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_tim_ex.c:908:19:HAL_TIMEx_OCN_Start_DMA	16	static
 ../Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_tim_ex.c:1068:19:HAL_TIMEx_OCN_Stop_DMA	16	static
 ../Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_tim_ex.c:1167:19:HAL_TIMEx_PWMN_Start	0	static
-../Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_tim_ex.c:1218:19:HAL_TIMEx_PWMN_Stop	4	static
+../Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_tim_ex.c:1218:19:HAL_TIMEx_PWMN_Stop	0	static
 ../Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_tim_ex.c:1251:19:HAL_TIMEx_PWMN_Start_IT	0	static
-../Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_tim_ex.c:1345:19:HAL_TIMEx_PWMN_Stop_IT	4	static
-../Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_tim_ex.c:1428:19:HAL_TIMEx_PWMN_Start_DMA	16	static
-../Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_tim_ex.c:1588:19:HAL_TIMEx_PWMN_Stop_DMA	16	static
+../Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_tim_ex.c:1345:19:HAL_TIMEx_PWMN_Stop_IT	0	static
+../Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_tim_ex.c:1428:19:HAL_TIMEx_PWMN_Start_DMA	0	static
+../Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_tim_ex.c:1588:19:HAL_TIMEx_PWMN_Stop_DMA	0	static
 ../Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_tim_ex.c:1687:19:HAL_TIMEx_OnePulseN_Start	16	static
 ../Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_tim_ex.c:1736:19:HAL_TIMEx_OnePulseN_Stop	8	static
 ../Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_tim_ex.c:1775:19:HAL_TIMEx_OnePulseN_Start_IT	16	static

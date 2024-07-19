@@ -15,7 +15,7 @@
 ../Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_adc.c:3590:6:ADC_DMAConvCplt	8	static
 ../Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_adc.c:3686:6:ADC_DMAError	8	static
 ../Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_adc.c:2760:19:HAL_ADC_ConfigChannel	32	static,ignoring_inline_asm
-../Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_adc.c:2998:19:HAL_ADC_AnalogWDGConfig	12	static,ignoring_inline_asm
+../Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_adc.c:2998:19:HAL_ADC_AnalogWDGConfig	16	static,ignoring_inline_asm
 ../Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_adc.c:3259:10:HAL_ADC_GetState	0	static
 ../Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_adc.c:3273:10:HAL_ADC_GetError	0	static
 ../Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_adc.c:3303:19:ADC_ConversionStop	16	static

@@ -2,5 +2,8 @@
 ../Core/Src/measure.c:50:10:get_max_min	8	static
 ../Core/Src/measure.c:70:6:samp	16	static
 ../Core/Src/measure.c:86:6:set_sm_freq	0	static
-../Core/Src/measure.c:93:7:get_freq	24	static
-../Core/Src/measure.c:127:10:get_fit_sm_hz	8	static
+../Core/Src/measure.c:93:7:get_freq	32	static
+../Core/Src/measure.c:138:7:get_freq_low	32	static
+../Core/Src/measure.c:159:10:get_fit_sm_hz	8	static
+../Core/Src/measure.c:167:6:fft_to_1024	48	static
+../Core/Src/measure.c:181:7:get_freq_dynamic	40	static

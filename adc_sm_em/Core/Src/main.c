@@ -62,7 +62,7 @@ SPI_HandleTypeDef hspi3;
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim6;
-DMA_HandleTypeDef hdma_tim3_ch1;
+DMA_HandleTypeDef hdma_tim2_ch1;
 
 UART_HandleTypeDef huart2;
 DMA_HandleTypeDef hdma_usart2_rx;
@@ -221,11 +221,29 @@ void split()
 GPIO_PinState prevalue;
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 {
-  if (htim == &htim3)
+  if (htim == &htim2)
   {
     ic_ongoing = 0;
     HAL_TIM_IC_Stop_DMA(&htim3, TIM_CHANNEL_1);
   }
+}
+void HAL_TIM_PeriodElapsedCallback (TIM_HandleTypeDef * htim)
+{
+	if (htim != &htim3)
+	{
+		return ;
+	}
+	yichu_counter++;
+}
+void uart_transmit_f(float freq)
+{
+	uint8_t freq_8[4];
+	uint32_t tmp = (int)(freq * 1e6);
+	freq_8[0] = (tmp >> 24) & 0xFF;
+	freq_8[1] = (tmp >> 16) & 0xFF;
+	freq_8[2] = (tmp >> 8) & 0xFF;
+	freq_8[3] = tmp & 0xFF;
+	uart_transmit(freq_8, 4);
 }
 /* USER CODE END PFP */
 
@@ -308,20 +326,35 @@ int main(void)
 //			  ;
 //		  uart_transmit(adc_buffer,2050);
 		  //split();
+		  set_sm_freq(1e6 , &htim6);
 		  samp(adc_buffer, 1025, &htim6, &hadc1);
 		  uint16_t temp_buffer[1025];
 		  make_8to16(adc_buffer, 2050,temp_buffer );
 		  uint16_t threshold = get_max_min(temp_buffer, 1025);
-		  uint32_t freq_data[2025];
+		  uint32_t freq_data[900];
+//		  float *in_data = temp_buffer + 1;
+//		  float out_data[1024] = {0.f};
+//		  float mo[512] = {0};
+//		  uint32_t index = 0;
+//		  float max_value = 0;
 		  float freq = get_freq(&hcomp3, &hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, threshold,
-				  &htim3, TIM_CHANNEL_1,freq_data , 2025 , &htim2) * 1e6;
+				  &htim2, TIM_CHANNEL_1,freq_data , 900 , &htim2);
+//		  if (freq < 0.01)
+//			  freq = get_freq_low(&hcomp3, &hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, threshold,
+//					  &htim3, TIM_CHANNEL_1,freq_data , 1896 , &htim2);
+
 //		  uint8_t freq_8[4];
-//		  uint8_t * tmp = (uint8_t*) &freq;
-//		  freq_8[0] = tmp[0];
-//		  freq_8[1] = tmp[1];
-//		  freq_8[2] = tmp[2];
-//		  freq_8[3] = tmp[3];
+//		  uint32_t tmp = (int)(freq * 1e6);
+//		  freq_8[0] = (tmp >> 24) & 0xFF;
+//		  freq_8[1] = (tmp >> 16) & 0xFF;
+//		  freq_8[2] = (tmp >> 8) & 0xFF;
+//		  freq_8[3] = tmp & 0xFF;
+//
 //		  uart_transmit(freq_8, 4);
+		  uart_transmit_f(freq);
+//		  fft_to_1024(in_data, out_data, mo, index, max_value);
+//		  float freq_fft = index / 1024 * 1e6;
+//		  uart_transmit_f(freq_fft);
 		  set_sm_freq(get_fit_sm_hz(freq) , &htim6);
 		  samp(adc_buffer, 1025, &htim6, &hadc1);
 		  uart_transmit(adc_buffer, 2050);
@@ -467,7 +500,7 @@ static void MX_COMP3_Init(void)
   hcomp3.Init.InputPlus = COMP_INPUT_PLUS_IO1;
   hcomp3.Init.InputMinus = COMP_INPUT_MINUS_DAC1_CH1;
   hcomp3.Init.OutputPol = COMP_OUTPUTPOL_NONINVERTED;
-  hcomp3.Init.Hysteresis = COMP_HYSTERESIS_NONE;
+  hcomp3.Init.Hysteresis = COMP_HYSTERESIS_70MV;
   hcomp3.Init.BlankingSrce = COMP_BLANKINGSRC_NONE;
   hcomp3.Init.TriggerMode = COMP_TRIGGERMODE_NONE;
   if (HAL_COMP_Init(&hcomp3) != HAL_OK)
@@ -663,6 +696,7 @@ static void MX_TIM2_Init(void)
 
   TIM_ClockConfigTypeDef sClockSourceConfig = {0};
   TIM_MasterConfigTypeDef sMasterConfig = {0};
+  TIM_IC_InitTypeDef sConfigIC = {0};
 
   /* USER CODE BEGIN TIM2_Init 1 */
 
@@ -682,9 +716,25 @@ static void MX_TIM2_Init(void)
   {
     Error_Handler();
   }
+  if (HAL_TIM_IC_Init(&htim2) != HAL_OK)
+  {
+    Error_Handler();
+  }
   sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
   if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sConfigIC.ICPolarity = TIM_INPUTCHANNELPOLARITY_RISING;
+  sConfigIC.ICSelection = TIM_ICSELECTION_DIRECTTI;
+  sConfigIC.ICPrescaler = TIM_ICPSC_DIV1;
+  sConfigIC.ICFilter = 0;
+  if (HAL_TIM_IC_ConfigChannel(&htim2, &sConfigIC, TIM_CHANNEL_1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_TIMEx_TISelection(&htim2, TIM_TIM2_TI1_COMP3, TIM_CHANNEL_1) != HAL_OK)
   {
     Error_Handler();
   }
@@ -708,7 +758,6 @@ static void MX_TIM3_Init(void)
 
   TIM_ClockConfigTypeDef sClockSourceConfig = {0};
   TIM_MasterConfigTypeDef sMasterConfig = {0};
-  TIM_IC_InitTypeDef sConfigIC = {0};
 
   /* USER CODE BEGIN TIM3_Init 1 */
 
@@ -728,25 +777,9 @@ static void MX_TIM3_Init(void)
   {
     Error_Handler();
   }
-  if (HAL_TIM_IC_Init(&htim3) != HAL_OK)
-  {
-    Error_Handler();
-  }
   sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
   if (HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  sConfigIC.ICPolarity = TIM_INPUTCHANNELPOLARITY_RISING;
-  sConfigIC.ICSelection = TIM_ICSELECTION_DIRECTTI;
-  sConfigIC.ICPrescaler = TIM_ICPSC_DIV1;
-  sConfigIC.ICFilter = 0;
-  if (HAL_TIM_IC_ConfigChannel(&htim3, &sConfigIC, TIM_CHANNEL_1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  if (HAL_TIMEx_TISelection(&htim3, TIM_TIM3_TI1_COMP3, TIM_CHANNEL_1) != HAL_OK)
   {
     Error_Handler();
   }

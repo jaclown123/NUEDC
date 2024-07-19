@@ -19,7 +19,7 @@
 ../Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_adc_ex.c:1326:19:HAL_ADCEx_RegularStop_IT	16	static
 ../Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_adc_ex.c:1386:19:HAL_ADCEx_RegularStop_DMA	16	static
 ../Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_adc_ex.c:1474:19:HAL_ADCEx_RegularMultiModeStop_DMA	128	static
-../Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_adc_ex.c:1659:19:HAL_ADCEx_InjectedConfigChannel	40	static,ignoring_inline_asm
+../Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_adc_ex.c:1659:19:HAL_ADCEx_InjectedConfigChannel	32	static,ignoring_inline_asm
 ../Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_adc_ex.c:2116:19:HAL_ADCEx_MultiModeConfigChannel	128	static
 ../Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_adc_ex.c:2233:19:HAL_ADCEx_EnableInjectedQueue	0	static
 ../Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_adc_ex.c:2274:19:HAL_ADCEx_DisableInjectedQueue	0	static
