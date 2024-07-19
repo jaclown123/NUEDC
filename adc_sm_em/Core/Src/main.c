@@ -25,6 +25,7 @@
 #include "stm32g4xx_ll_spi.h"
 #include "stm32g4xx_ll_gpio.h"
 #include "arm_math.h"
+#include "measure.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -53,14 +54,15 @@ COMP_HandleTypeDef hcomp3;
 CRC_HandleTypeDef hcrc;
 
 DAC_HandleTypeDef hdac1;
-DMA_HandleTypeDef hdma_dac1_ch1;
 
 I2C_HandleTypeDef hi2c1;
 
 SPI_HandleTypeDef hspi3;
 
+TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim6;
+DMA_HandleTypeDef hdma_tim3_ch1;
 
 UART_HandleTypeDef huart2;
 DMA_HandleTypeDef hdma_usart2_rx;
@@ -82,6 +84,7 @@ static void MX_I2C1_Init(void);
 static void MX_DAC1_Init(void);
 static void MX_COMP3_Init(void);
 static void MX_TIM3_Init(void);
+static void MX_TIM2_Init(void);
 /* USER CODE BEGIN PFP */
 
 void gpio_handler(uint8_t* data, size_t size)
@@ -195,7 +198,7 @@ void i2c_handler(uint8_t * data, size_t size)
 	}
 }
 uint8_t adc_buffer[2050];
-int adc_ongoing = 0;
+//int adc_ongoing = 0;
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 {
 	if (hadc != &hadc1)
@@ -216,6 +219,14 @@ void split()
 	}
 }
 GPIO_PinState prevalue;
+void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
+{
+  if (htim == &htim3)
+  {
+    ic_ongoing = 0;
+    HAL_TIM_IC_Stop_DMA(&htim3, TIM_CHANNEL_1);
+  }
+}
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -262,6 +273,7 @@ int main(void)
   MX_DAC1_Init();
   MX_COMP3_Init();
   MX_TIM3_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
   //HAL_ADC_Start_DMA(&hadc1, (uint32_t *) adc_buffer, 1025);
   uart_init();
@@ -286,17 +298,34 @@ int main(void)
 	  if (HAL_GPIO_ReadPin(con_GPIO_Port,con_Pin) != prevalue)
 	  {
 
-
-		  HAL_TIM_Base_Start(&htim6);
-
-		  HAL_ADC_Start_DMA(&hadc1, (uint32_t *) adc_buffer, 2050);
-
-		  adc_ongoing = 1;
-		  while (adc_ongoing)
-			  ;
-		  uart_transmit(adc_buffer,2050);
+//
+//		  HAL_TIM_Base_Start(&htim6);
+//
+//		  HAL_ADC_Start_DMA(&hadc1, (uint32_t *) adc_buffer, 2050);
+//
+//		  adc_ongoing = 1;
+//		  while (adc_ongoing)
+//			  ;
+//		  uart_transmit(adc_buffer,2050);
 		  //split();
-
+		  samp(adc_buffer, 1025, &htim6, &hadc1);
+		  uint16_t temp_buffer[1025];
+		  make_8to16(adc_buffer, 2050,temp_buffer );
+		  uint16_t threshold = get_max_min(temp_buffer, 1025);
+		  uint32_t freq_data[2025];
+		  float freq = get_freq(&hcomp3, &hdac1, DAC_CHANNEL_1, DAC_ALIGN_12B_R, threshold,
+				  &htim3, TIM_CHANNEL_1,freq_data , 2025 , &htim2) * 1e6;
+//		  uint8_t freq_8[4];
+//		  uint8_t * tmp = (uint8_t*) &freq;
+//		  freq_8[0] = tmp[0];
+//		  freq_8[1] = tmp[1];
+//		  freq_8[2] = tmp[2];
+//		  freq_8[3] = tmp[3];
+//		  uart_transmit(freq_8, 4);
+		  set_sm_freq(get_fit_sm_hz(freq) , &htim6);
+		  samp(adc_buffer, 1025, &htim6, &hadc1);
+		  uart_transmit(adc_buffer, 2050);
+		  //uart_transmit(&freq,1);
 	  }
 	  prevalue = HAL_GPIO_ReadPin(con_GPIO_Port, con_Pin);
 
@@ -621,6 +650,51 @@ static void MX_SPI3_Init(void)
 }
 
 /**
+  * @brief TIM2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM2_Init(void)
+{
+
+  /* USER CODE BEGIN TIM2_Init 0 */
+
+  /* USER CODE END TIM2_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM2_Init 1 */
+
+  /* USER CODE END TIM2_Init 1 */
+  htim2.Instance = TIM2;
+  htim2.Init.Prescaler = 0;
+  htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim2.Init.Period = 4294967295;
+  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim2, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM2_Init 2 */
+
+  /* USER CODE END TIM2_Init 2 */
+
+}
+
+/**
   * @brief TIM3 Initialization Function
   * @param None
   * @retval None
@@ -783,9 +857,9 @@ static void MX_DMA_Init(void)
   /* DMA1_Channel1_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Channel1_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA1_Channel1_IRQn);
-  /* DMA2_Channel1_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA2_Channel1_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(DMA2_Channel1_IRQn);
+  /* DMA1_Channel2_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Channel2_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Channel2_IRQn);
   /* DMA2_Channel8_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA2_Channel8_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA2_Channel8_IRQn);
