@@ -4155,9 +4155,8 @@ LOAD D:/ST/STM32CubeIDE_1.15.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
  .text.AWG_Offset_Init
                 0x080005a8       0x30 ./Core/Src/main.o
                 0x080005a8                AWG_Offset_Init
- .text.main     0x080005d8       0x3a ./Core/Src/main.o
+ .text.main     0x080005d8       0x3c ./Core/Src/main.o
                 0x080005d8                main
- *fill*         0x08000612        0x2 
  .text.SystemClock_Config
                 0x08000614       0xb0 ./Core/Src/main.o
                 0x08000614                SystemClock_Config

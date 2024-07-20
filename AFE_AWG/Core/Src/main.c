@@ -234,8 +234,11 @@ int main(void)
   MX_TIM6_Init();
   MX_TIM7_Init();
   /* USER CODE BEGIN 2 */
+  //AFE_Gain(4);
+  //AFE_Offset(130);
   AWG_Offset_Init();
-  AWG_Offset(0);
+  AWG_Offset(32768);
+  //AWG_Gain(1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -554,9 +557,6 @@ static void MX_DMA_Init(void)
   __HAL_RCC_DMA1_CLK_ENABLE();
 
   /* DMA interrupt init */
-  /* DMA1_Channel1_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Channel1_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(DMA1_Channel1_IRQn);
   /* DMA2_Channel8_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA2_Channel8_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA2_Channel8_IRQn);

@@ -531,19 +531,21 @@ int main(void)
   MX_TIM7_Init();
  8000600:	f000 f93a 	bl	8000878 <MX_TIM7_Init>
   /* USER CODE BEGIN 2 */
+  //AFE_Gain(4);
+  //AFE_Offset(130);
   AWG_Offset_Init();
  8000604:	f7ff ffd0 	bl	80005a8 <AWG_Offset_Init>
-  AWG_Offset(0);
- 8000608:	2000      	movs	r0, #0
- 800060a:	f7ff ffb7 	bl	800057c <AWG_Offset>
+  AWG_Offset(32768);
+ 8000608:	f44f 4000 	mov.w	r0, #32768	@ 0x8000
+ 800060c:	f7ff ffb6 	bl	800057c <AWG_Offset>
+  //AWG_Gain(1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
- 800060e:	bf00      	nop
- 8000610:	e7fd      	b.n	800060e <main+0x36>
-	...
+ 8000610:	bf00      	nop
+ 8000612:	e7fd      	b.n	8000610 <main+0x38>
 
 08000614 <SystemClock_Config>:
 /**
