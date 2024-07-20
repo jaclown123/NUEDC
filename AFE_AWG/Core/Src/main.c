@@ -91,6 +91,16 @@ static void MX_TIM6_Init(void);
 static void MX_TIM7_Init(void);
 /* USER CODE BEGIN PFP */
 /**
+ * @brief  AFE Offset DAC init,must run is before set offset of AFE
+ */
+void AFE_Offset_LDAC_Init(){
+  uint8_t cmd[2]={144,0};
+  HAL_GPIO_WritePin(XDAC_CS_GPIO_Port, XDAC_CS_Pin, GPIO_PIN_RESET);
+  HAL_SPI_Transmit(&hspi3, cmd, 2, 1000);
+  HAL_GPIO_WritePin(XDAC_CS_GPIO_Port, XDAC_CS_Pin, GPIO_PIN_SET);
+}
+
+/**
   * @brief  set AFE gain
   * @param  gain_level uint8_t from 1 to 6, bigger number bigger gain, gain is 1/3, 1, 3, 9.5, 19, 39,
   *                    with a extra 1/5 decrease
@@ -234,10 +244,10 @@ int main(void)
   MX_TIM6_Init();
   MX_TIM7_Init();
   /* USER CODE BEGIN 2 */
-  //AFE_Gain(4);
-  //AFE_Offset(130);
-  AWG_Offset_Init();
-  AWG_Offset(32768);
+  AFE_Offset_LDAC_Init();
+  AFE_Gain(4);
+  AFE_Offset(130);
+
   //AWG_Gain(1);
   /* USER CODE END 2 */
 
