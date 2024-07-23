@@ -236,7 +236,16 @@ int main(void)
   float fft_in[N] = {0};
   float fft_out[N] = {0};
   float fft_mag[N] = {0};
-  float max_mag = 0;
+  uint32_t deal_mag[N] = {0};
+  uint32_t big_mag[6] = {0};
+  int index[6] = {0};
+  uint8_t k = 0;
+  float max = 0;
+  float sec = 0;
+  int max_num = 0;
+  int sec_num = 0;
+  int triang_1 = 0;
+  int triang_2 = 0;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -244,6 +253,7 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
+	/* USER CODE BEGIN 3 */
 	  set_sm_freq(1e6 , &htim6);
 	  samp(adc_buffer, 1025, &htim6, &hadc1);
 	  uint16_t temp_buffer[1025];
@@ -257,26 +267,48 @@ int main(void)
 
 	  for(int i = 2; i < 512; ++i)
 	  {
-		  if(fft_mag[i] > second_mag)
+		  if(fft_mag[i] < 5000)
+			  deal_mag[i] = 0;
+		  else
+			  deal_mag[i] = fft_mag[i];
+	  }
+      k = 0;
+	  for(int i = 2; i < 510; ++i)
+	  {
+		  if(deal_mag[i] > 0)
 		  {
-			  if(fft_mag[i] > max_mag || fft_mag[i] > fft_mag[i - 1])
+			  if(deal_mag[i] > deal_mag[i-1] && deal_mag[i] > deal_mag[i+1])
 			  {
-				  max_mag = fft_mag[i];
-				  max = i;
-				  second_mag = max_mag;
-				  second = max;
+				  big_mag[k] = deal_mag[i];
+				  index[k] = i;
+				  k++;
+			  }
+		  }
+		  if(k == 6) break;
+	  }
+	  for(int i = 0;i < 6; ++i)
+	  {
+		  if(big_mag[i] > sec)
+		  {
+			  if(big_mag[i] > max)
+			  {
+				  sec = max;
+				  sec_num = max_num;
+				  max = big_mag[i];
+				  max_num = index[i];
+
 			  }
 			  else
 			  {
-				  second_mag = fft_mag[i];
-				  second = i;
+				  sec = big_mag[i];
+				  sec_num = index[i];
 			  }
 		  }
 	  }
-	  if(fft_mag[3 * max] >= max_mag / 10 || fft_mag[5 * max] >= max_mag / 27 )
-		  triangle_1 = 1;
-	  if(fft_mag[3 * second] >= second_mag / 10 || fft_mag[5 * second] >= second_mag / 27 )
-		  triangle_2 = 1;
+	  max_num = ((max_num * 0.97656) / 5) * 5;
+	  sec_num = ((sec_num * 0.97656) / 5) * 5;
+	  if(deal_mag[(int)(max_num * 3.076)] > 0 || deal_mag[(int)(max_num * 3.076) + 1] > 0) triang_1 = 1;
+	  if(deal_mag[(int)(sec_num * 3.076)] > 0 || deal_mag[(int)(sec_num * 3.076) + 1] > 0) triang_2 = 1;
   }
   /* USER CODE END 3 */
 }

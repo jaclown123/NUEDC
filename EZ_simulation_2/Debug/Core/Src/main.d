@@ -42,7 +42,7 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_uart.h \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_uart_ex.h \
  ../Core/Inc/measure.h ../Core/Inc/fitting.h \
- C:/Users/linyixin/Desktop/c2406/workspace_3/EZ_simulation/Drivers/CMSIS/DSP/Include/arm_math.h \
+ C:/Users/linyixin/Documents/GitHub/NUEDC/EZ_simulation_2/Drivers/CMSIS/DSP/Include/arm_math.h \
  ../Drivers/CMSIS/Include/cmsis_compiler.h
 ../Core/Inc/main.h:
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal.h:
@@ -89,5 +89,5 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_uart_ex.h:
 ../Core/Inc/measure.h:
 ../Core/Inc/fitting.h:
-C:/Users/linyixin/Desktop/c2406/workspace_3/EZ_simulation/Drivers/CMSIS/DSP/Include/arm_math.h:
+C:/Users/linyixin/Documents/GitHub/NUEDC/EZ_simulation_2/Drivers/CMSIS/DSP/Include/arm_math.h:
 ../Drivers/CMSIS/Include/cmsis_compiler.h:
