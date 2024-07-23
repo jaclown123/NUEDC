@@ -246,7 +246,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   AFE_Offset_LDAC_Init();
   AFE_Gain(4);
-  AFE_Offset(130);
+  AFE_Offset(30);
 
   //AWG_Gain(1);
   /* USER CODE END 2 */

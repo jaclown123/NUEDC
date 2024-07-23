@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="d7f334f9-2d65-4bcd-9310-f675cc73cd5d" name="更改" comment="">
+      <change beforePath="$PROJECT_DIR$/adc_sam.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sam.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/.settings/language.settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/.settings/language.settings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/.settings/stm32cubeide.project.prefs" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/.settings/stm32cubeide.project.prefs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Core/Src/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Core/Src/main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/main.cyclo" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/main.cyclo" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/main.d" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/main.d" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/main.o" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/main.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/main.su" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/main.su" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/stm32g4xx_hal_msp.cyclo" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/stm32g4xx_hal_msp.cyclo" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/stm32g4xx_hal_msp.d" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/stm32g4xx_hal_msp.d" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/stm32g4xx_hal_msp.o" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/stm32g4xx_hal_msp.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/stm32g4xx_hal_msp.su" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/stm32g4xx_hal_msp.su" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/stm32g4xx_it.cyclo" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/stm32g4xx_it.cyclo" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/stm32g4xx_it.d" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/stm32g4xx_it.d" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/stm32g4xx_it.o" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/stm32g4xx_it.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/stm32g4xx_it.su" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/stm32g4xx_it.su" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/subdir.mk" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/subdir.mk" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/syscalls.o" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/syscalls.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/sysmem.o" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/sysmem.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/system_stm32g4xx.d" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/system_stm32g4xx.d" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/system_stm32g4xx.o" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/system_stm32g4xx.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/uart_reg.cyclo" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/uart_reg.cyclo" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/uart_reg.d" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/uart_reg.d" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/uart_reg.o" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/uart_reg.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/uart_reg.su" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Src/uart_reg.su" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Startup/startup_stm32g474retx.o" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Startup/startup_stm32g474retx.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Startup/subdir.mk" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Core/Startup/subdir.mk" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal.d" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal.d" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal.o" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_adc.d" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_adc.d" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_adc.o" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_adc.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_adc_ex.d" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_adc_ex.d" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_adc_ex.o" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_adc_ex.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_cortex.d" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_cortex.d" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_cortex.o" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_cortex.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_crc.d" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_crc.d" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_crc.o" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_crc.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_crc_ex.d" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_crc_ex.d" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_crc_ex.o" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_crc_ex.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_dma.d" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_dma.d" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_dma.o" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_dma.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_dma_ex.d" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_dma_ex.d" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_dma_ex.o" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_dma_ex.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_exti.d" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_exti.d" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_exti.o" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_exti.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_flash.d" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_flash.d" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_flash.o" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_flash.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_flash_ex.d" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_flash_ex.d" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_flash_ex.o" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_flash_ex.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_flash_ramfunc.d" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_flash_ramfunc.d" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_flash_ramfunc.o" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_flash_ramfunc.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_gpio.d" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_gpio.d" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_gpio.o" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_gpio.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_i2c.d" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_i2c.d" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_i2c.o" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_i2c.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_i2c_ex.d" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_i2c_ex.d" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_i2c_ex.o" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_i2c_ex.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_pwr.d" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_pwr.d" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_pwr.o" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_pwr.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_pwr_ex.d" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_pwr_ex.d" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_pwr_ex.o" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_pwr_ex.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_rcc.d" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_rcc.d" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_rcc.o" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_rcc.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_rcc_ex.d" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_rcc_ex.d" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_rcc_ex.o" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_rcc_ex.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_spi.d" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_spi.d" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_spi.o" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_spi.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_spi_ex.d" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_spi_ex.d" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_spi_ex.o" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_spi_ex.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_tim.d" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_tim.d" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_tim.o" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_tim.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_tim_ex.d" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_tim_ex.d" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_tim_ex.o" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_tim_ex.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_uart.d" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_uart.d" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_uart.o" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_uart.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_uart_ex.d" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_uart_ex.d" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_uart_ex.o" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_uart_ex.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_ll_adc.o" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_ll_adc.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/subdir.mk" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/Drivers/STM32G4xx_HAL_Driver/Src/subdir.mk" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/adc_sm_em.elf" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/adc_sm_em.elf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/adc_sm_em.list" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/adc_sm_em.list" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/adc_sm_em.map" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/adc_sm_em.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/makefile" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/objects.list" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/objects.list" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/adc_sm_em/Debug/sources.mk" beforeDir="false" afterPath="$PROJECT_DIR$/adc_sm_em/Debug/sources.mk" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 1
+}]]></component>
+  <component name="ProjectId" id="2jS73Mjp7sW0DzAiTR8QLSPyaeJ" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-PY-241.18034.82" />
+        <option value="bundled-python-sdk-975db3bf15a3-2767605e8bc2-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-241.18034.82" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="默认任务">
+      <changelist id="d7f334f9-2d65-4bcd-9310-f675cc73cd5d" name="更改" comment="" />
+      <created>1721368423734</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1721368423734</updated>
+      <workItem from="1721368426699" duration="34000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

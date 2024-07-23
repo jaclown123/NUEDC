@@ -60,8 +60,8 @@ all: main-build
 main-build: AFE_AWG.elf secondary-outputs
 
 # Tool invocations
-AFE_AWG.elf AFE_AWG.map: $(OBJS) $(USER_OBJS) D:\workspace\NUEDC\Embed_Study\AFE_AWG\STM32G474RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "AFE_AWG.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"D:\workspace\NUEDC\Embed_Study\AFE_AWG\STM32G474RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="AFE_AWG.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+AFE_AWG.elf AFE_AWG.map: $(OBJS) $(USER_OBJS) C:\Users\linyixin\Documents\GitHub\NUEDC\AFE_AWG\STM32G474RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "AFE_AWG.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\linyixin\Documents\GitHub\NUEDC\AFE_AWG\STM32G474RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="AFE_AWG.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

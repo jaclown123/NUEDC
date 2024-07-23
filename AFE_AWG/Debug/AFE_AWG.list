@@ -39,13 +39,13 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  17 .debug_line   00017da4  00000000  00000000  000490a2  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    000fdc04  00000000  00000000  00060e46  2**0
+ 18 .debug_str    000fdc0e  00000000  00000000  00060e46  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000043  00000000  00000000  0015ea4a  2**0
+ 19 .comment      00000043  00000000  00000000  0015ea54  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  000054fc  00000000  00000000  0015ea90  2**2
+ 20 .debug_frame  000054fc  00000000  00000000  0015ea98  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 21 .debug_line_str 00000055  00000000  00000000  00163f8c  2**0
+ 21 .debug_line_str 0000005f  00000000  00000000  00163f94  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -565,8 +565,8 @@ int main(void)
   AFE_Gain(4);
  8000658:	2004      	movs	r0, #4
  800065a:	f7ff ff75 	bl	8000548 <AFE_Gain>
-  AFE_Offset(130);
- 800065e:	2082      	movs	r0, #130	@ 0x82
+  AFE_Offset(30);
+ 800065e:	201e      	movs	r0, #30
  8000660:	f7ff ffb2 	bl	80005c8 <AFE_Offset>
   //AWG_Gain(1);
   /* USER CODE END 2 */
