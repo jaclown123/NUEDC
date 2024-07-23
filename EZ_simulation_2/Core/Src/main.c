@@ -255,12 +255,28 @@ int main(void)
 	  }
 	  fft_transfer(fft_in, fft_out, fft_mag);
 
-//	  for(int i = 0; i < 512; ++i)
-//	  {
-//		  if(fft_mag[i] > max_mag) max_mag = fft_mag[i];
-//	  }
-
-    /* USER CODE BEGIN 3 */
+	  for(int i = 2; i < 512; ++i)
+	  {
+		  if(fft_mag[i] > second_mag)
+		  {
+			  if(fft_mag[i] > max_mag || fft_mag[i] > fft_mag[i - 1])
+			  {
+				  max_mag = fft_mag[i];
+				  max = i;
+				  second_mag = max_mag;
+				  second = max;
+			  }
+			  else
+			  {
+				  second_mag = fft_mag[i];
+				  second = i;
+			  }
+		  }
+	  }
+	  if(fft_mag[3 * max] >= max_mag / 10 || fft_mag[5 * max] >= max_mag / 27 )
+		  triangle_1 = 1;
+	  if(fft_mag[3 * second] >= second_mag / 10 || fft_mag[5 * second] >= second_mag / 27 )
+		  triangle_2 = 1;
   }
   /* USER CODE END 3 */
 }
