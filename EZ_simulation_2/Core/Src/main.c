@@ -178,7 +178,14 @@ void AFE_Offset(uint16_t offset_level){
     HAL_GPIO_WritePin(XDAC_CS_GPIO_Port, XDAC_CS_Pin, GPIO_PIN_SET);
   }
 }
-
+int roundToNearest5(int num) {
+    int remainder = num % 5;
+    if (remainder >= 2.5) {
+        return num + (5 - remainder);
+    } else {
+        return num - remainder;
+    }
+}
 
 /* USER CODE END 0 */
 
@@ -229,16 +236,13 @@ int main(void)
   {
 	  window[i] = 0.5 - 0.5 * arm_cos_f32(i * (2 * PI / (N - 1)));
   }
-
   AFE_Offset_LDAC_Init();
   AFE_Gain(3);
   AFE_Offset(256);
   float fft_in[N] = {0};
   float fft_out[N] = {0};
   float fft_mag[N] = {0};
-  uint32_t deal_mag[N] = {0};
-  uint32_t big_mag[6] = {0};
-  int index[6] = {0};
+
   uint8_t k = 0;
   float max = 0;
   float sec = 0;
@@ -254,6 +258,10 @@ int main(void)
   {
     /* USER CODE END WHILE */
 	/* USER CODE BEGIN 3 */
+	  uint32_t deal_mag[N] = {0};
+	  uint32_t big_mag[6] = {0};
+	  int index[6] = {0};
+
 	  set_sm_freq(1e6 , &htim6);
 	  samp(adc_buffer, 1025, &htim6, &hadc1);
 	  uint16_t temp_buffer[1025];
@@ -273,6 +281,12 @@ int main(void)
 			  deal_mag[i] = fft_mag[i];
 	  }
       k = 0;
+      max = 0;
+      sec = 0;
+      max_num = 0;
+      sec_num = 0;
+      triang_1 = 0;
+      triang_2 = 0;
 	  for(int i = 2; i < 510; ++i)
 	  {
 		  if(deal_mag[i] > 0)
@@ -296,7 +310,6 @@ int main(void)
 				  sec_num = max_num;
 				  max = big_mag[i];
 				  max_num = index[i];
-
 			  }
 			  else
 			  {
@@ -307,6 +320,8 @@ int main(void)
 	  }
 	  max_num = ((max_num * 0.97656) / 5) * 5;
 	  sec_num = ((sec_num * 0.97656) / 5) * 5;
+	  max_num = roundToNearest5(max_num);
+	  sec_num = roundToNearest5(sec_num);
 	  if(deal_mag[(int)(max_num * 3.076)] > 0 || deal_mag[(int)(max_num * 3.076) + 1] > 0) triang_1 = 1;
 	  if(deal_mag[(int)(sec_num * 3.076)] > 0 || deal_mag[(int)(sec_num * 3.076) + 1] > 0) triang_2 = 1;
   }
