@@ -277,7 +277,7 @@ int main(void)
 	  int freq_2 = 0;
       int waveform_1 = 0;
       int waveform_2 = 0;
-	  for(int i = 2; i < 510; ++i)
+	  for(int i = 2; i < 512; ++i)
 	  {
 		  if((deal_mag[i]) > 2400)
 		  {
@@ -302,23 +302,24 @@ int main(void)
 		  {
 			  waveform_1 = 0;
 			  waveform_2 = 0;
-			  for(int i = 0;i < 6; ++i)
-				  if(index[i] > 0)
-				  {
-					  freq_1 = index[i];
-					  freq_2 = index[i];
-				  }
+			  freq_1 = index[0];
+			  freq_2 = index[0];
 			  break;
 		  }
 		  case 2 :
 		  {
 			  waveform_1 = 0;
 			  waveform_2 = 0;
-			  for(int i = 0;i < 6; ++i)
+			  freq_1 = index[0];
+			  if(big_mag[1]<10000)
 			  {
-				  if(index[i] > 0 && freq_1 == 0) freq_1 = index[i];
-				  if(index[i] > 0 && freq_1 > 0)  freq_2 = index[i];
+				  freq_2 = index[0];
 			  }
+			  else
+			  {
+				  freq_2 = index[1];
+			  }
+			  break;
 		  }
 		  case 3:
 		  {
