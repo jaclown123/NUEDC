@@ -178,11 +178,14 @@ void AFE_Offset(uint16_t offset_level){
     HAL_GPIO_WritePin(XDAC_CS_GPIO_Port, XDAC_CS_Pin, GPIO_PIN_SET);
   }
 }
-int roundToNearest5(int num) {
+
+int roundToNearest5(int num)
+{
     int remainder = num % 5;
     if (remainder >= 2.5) {
         return num + (5 - remainder);
-    } else {
+    }
+    else {
         return num - remainder;
     }
 }
@@ -241,15 +244,9 @@ int main(void)
   AFE_Offset(256);
   float fft_in[N] = {0};
   float fft_out[N] = {0};
-  float fft_mag[N] = {0};
+  float deal_mag[N] = {0};
 
-  uint8_t k = 0;
-  float max = 0;
-  float sec = 0;
-  int max_num = 0;
-  int sec_num = 0;
-  int triang_1 = 0;
-  int triang_2 = 0;
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -258,38 +255,29 @@ int main(void)
   {
     /* USER CODE END WHILE */
 	/* USER CODE BEGIN 3 */
-	  uint32_t deal_mag[N] = {0};
 	  uint32_t big_mag[6] = {0};
 	  int index[6] = {0};
-
 	  set_sm_freq(1e6 , &htim6);
 	  samp(adc_buffer, 1025, &htim6, &hadc1);
 	  uint16_t temp_buffer[1025];
 	  make_8to16(adc_buffer, 2050, temp_buffer);
-	  int_to_float(temp_buffer+1, fft_in);
+	  int_to_float(temp_buffer + 1, fft_in);
 	  for (int i = 0; i < N; ++i)
 	  {
 	  	  fft_in[i] *= window[i];
 	  }
-	  fft_transfer(fft_in, fft_out, fft_mag);
+	  fft_transfer(fft_in, fft_out, deal_mag);
 
-	  for(int i = 2; i < 512; ++i)
-	  {
-		  if(fft_mag[i] < 5000)
-			  deal_mag[i] = 0;
-		  else
-			  deal_mag[i] = fft_mag[i];
-	  }
-      k = 0;
-      max = 0;
-      sec = 0;
-      max_num = 0;
-      sec_num = 0;
-      triang_1 = 0;
-      triang_2 = 0;
+	  uint8_t k = 0;
+	  float max = 0;
+	  float sec = 0;
+	  int freq_1 = 0;
+	  int freq_2 = 0;
+      int triang_1 = 0;
+      int triang_2 = 0;
 	  for(int i = 2; i < 510; ++i)
 	  {
-		  if(deal_mag[i] > 0)
+		  if((deal_mag[i]) > 2500)
 		  {
 			  if(deal_mag[i] > deal_mag[i-1] && deal_mag[i] > deal_mag[i+1])
 			  {
@@ -302,28 +290,36 @@ int main(void)
 	  }
 	  for(int i = 0;i < 6; ++i)
 	  {
+		  index[i] = ((index[i] * 0.97656) / 5) * 5;
+		  index[i] = roundToNearest5(index[i]);
+	  }
+	  for(int i = 0;i < 6; ++i)
+	  {
 		  if(big_mag[i] > sec)
 		  {
 			  if(big_mag[i] > max)
 			  {
 				  sec = max;
-				  sec_num = max_num;
+				  freq_2 = freq_1;
 				  max = big_mag[i];
-				  max_num = index[i];
+				  freq_1 = index[i];
 			  }
 			  else
 			  {
 				  sec = big_mag[i];
-				  sec_num = index[i];
+				  freq_2 = index[i];
 			  }
 		  }
 	  }
-	  max_num = ((max_num * 0.97656) / 5) * 5;
-	  sec_num = ((sec_num * 0.97656) / 5) * 5;
-	  max_num = roundToNearest5(max_num);
-	  sec_num = roundToNearest5(sec_num);
-	  if(deal_mag[(int)(max_num * 3.076)] > 0 || deal_mag[(int)(max_num * 3.076) + 1] > 0) triang_1 = 1;
-	  if(deal_mag[(int)(sec_num * 3.076)] > 0 || deal_mag[(int)(sec_num * 3.076) + 1] > 0) triang_2 = 1;
+	  for(int i = 0;i < 6; ++i)
+	  {
+		  if(index[i] == 3 * freq_1 || index[i] == 5 * freq_1)
+			  triang_1 ++;
+		  if(index[i] == 3 * freq_2 || index[i] == 5 * freq_2)
+			  triang_2 ++;
+	  }
+	  if(triang_1 == 2) {int waveform_1 = 1;}
+	  if(triang_2 == 2) {int waveform_2 = 1;}
   }
   /* USER CODE END 3 */
 }
