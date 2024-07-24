@@ -242,10 +242,11 @@ int main(void)
   AFE_Offset_LDAC_Init();
   AFE_Gain(3);
   AFE_Offset(256);
+
   float fft_in[N] = {0};
   float fft_out[N] = {0};
   float deal_mag[N] = {0};
-
+  int dds[2];
 
   /* USER CODE END 2 */
 
@@ -257,6 +258,7 @@ int main(void)
 	/* USER CODE BEGIN 3 */
 	  uint32_t big_mag[6] = {0};
 	  int index[6] = {0};
+	  int freq_counter = 0;
 	  set_sm_freq(1e6 , &htim6);
 	  samp(adc_buffer, 1025, &htim6, &hadc1);
 	  uint16_t temp_buffer[1025];
@@ -273,8 +275,8 @@ int main(void)
 	  float sec = 0;
 	  int freq_1 = 0;
 	  int freq_2 = 0;
-      int triang_1 = 0;
-      int triang_2 = 0;
+      int waveform_1 = 0;
+      int waveform_2 = 0;
 	  for(int i = 2; i < 510; ++i)
 	  {
 		  if((deal_mag[i]) > 2500)
@@ -292,34 +294,107 @@ int main(void)
 	  {
 		  index[i] = ((index[i] * 0.97656) / 5) * 5;
 		  index[i] = roundToNearest5(index[i]);
+		  if(index[i] > 0) freq_counter ++;
 	  }
-	  for(int i = 0;i < 6; ++i)
+	  switch(freq_counter)
 	  {
-		  if(big_mag[i] > sec)
+		  case 1:
 		  {
-			  if(big_mag[i] > max)
+			  for(int i = 0;i < 6; ++i)
+				  if(index[i] > 0)
+				  {
+					  freq_1 = index[i];
+					  freq_2 = index[i];
+				  }
+			  break;
+		  }
+		  case 2 :
+		  {
+			  waveform_1 = 0;
+			  waveform_2 = 0;
+			  for(int i = 0;i < 6; ++i)
 			  {
-				  sec = max;
-				  freq_2 = freq_1;
-				  max = big_mag[i];
-				  freq_1 = index[i];
-			  }
-			  else
-			  {
-				  sec = big_mag[i];
-				  freq_2 = index[i];
+				  if(index[i] > 0 && freq_1 == 0) freq_1 = index[i];
+				  if(index[i] > 0 && freq_1 > 0)  freq_2 = index[i];
 			  }
 		  }
+		  case 3:
+		  {
+			  waveform_1 = 0;
+			  waveform_2 = 1;
+			  freq_2 = 100;
+			  for(int i = 0;i < 6; ++i)
+			  {
+				  if(big_mag[i] > max)
+				  {
+					  max = big_mag[i];
+					  freq_1 = index[i];
+				  }
+				  if(freq_2 > index[i] && index[i] > 0)
+				  {
+					  freq_2 = index[i];
+				  }
+			  }
+			  break;
+		  }
+		  case 4 :
+		  {
+			  waveform_1 = 1;
+			  waveform_2 = 1;
+			  for(int i = 0;i < 6; ++i)
+			  {
+				  if(big_mag[i] > sec)
+				  {
+					  if(big_mag[i] > max)
+					  {
+						  sec = max;
+						  freq_2 = freq_1;
+						  max = big_mag[i];
+						  freq_1 = index[i];
+					  }
+					  else
+					  {
+						  sec = big_mag[i];
+						  freq_2 = index[i];
+					  }
+				  }
+			  }
+			  break;
+		  }
+		  case 5 : case 6:
+		  {
+			  waveform_1 = 1;
+			  waveform_2 = 1;
+			  for(int i = 0;i < 6; ++i)
+			  {
+				  if(big_mag[i] > sec)
+				  {
+					  if(big_mag[i] > max)
+					  {
+						  sec = max;
+						  freq_2 = freq_1;
+						  max = big_mag[i];
+						  freq_1 = index[i];
+					  }
+					  else
+					  {
+						  sec = big_mag[i];
+						  freq_2 = index[i];
+					  }
+				  }
+			  }
+			  break;
+		  }
 	  }
-	  for(int i = 0;i < 6; ++i)
-	  {
-		  if(index[i] == 3 * freq_1 || index[i] == 5 * freq_1)
-			  triang_1 ++;
-		  if(index[i] == 3 * freq_2 || index[i] == 5 * freq_2)
-			  triang_2 ++;
-	  }
-	  if(triang_1 == 2) {int waveform_1 = 1;}
-	  if(triang_2 == 2) {int waveform_2 = 1;}
+	  dds[0] = freq_1;
+//	  for(int i = 0;i < 6; ++i)
+//	  {
+//		  if(index[i] == 3 * freq_1 || index[i] == 5 * freq_1)
+//			  triang_1 ++;
+//		  if(index[i] == 3 * freq_2 || index[i] == 5 * freq_2)
+//			  triang_2 ++;
+//	  }
+
   }
   /* USER CODE END 3 */
 }
