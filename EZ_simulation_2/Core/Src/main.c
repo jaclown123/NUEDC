@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include "fitting.h"
 #include "arm_math.h"
+#include "dds.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -133,6 +134,23 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 	adc_ongoing = 0;
 	HAL_ADC_Stop_DMA(hadc);
 	HAL_TIM_Base_Stop(&htim6);
+}
+
+void send_ad9834(uint16_t cmd)
+{
+  HAL_GPIO_WritePin(AD9834_EN_GPIO_Port, AD9834_EN_Pin, GPIO_PIN_RESET);
+
+  HAL_SPI_Transmit(&hspi3, (uint8_t*)&cmd, 1, 10);
+
+  HAL_GPIO_WritePin(AD9834_EN_GPIO_Port, AD9834_EN_Pin, GPIO_PIN_SET);
+}
+void send_ad9833(uint16_t cmd)
+{
+  HAL_GPIO_WritePin(AD9834_EN_GPIO_Port, AD9834_EN_Pin, GPIO_PIN_RESET);
+
+  HAL_SPI_Transmit(&hspi3, (uint8_t*)&cmd, 1, 10);
+
+  HAL_GPIO_WritePin(AD9834_EN_GPIO_Port, AD9834_EN_Pin, GPIO_PIN_SET);
 }
 void AFE_Offset_LDAC_Init()
 {
@@ -247,6 +265,8 @@ int main(void)
   float fft_out[N] = {0};
   float deal_mag[N] = {0};
   int dds[2];
+  //set_freq(send_data,100000,1);
+
 
   /* USER CODE END 2 */
 
@@ -255,7 +275,8 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-	/* USER CODE BEGIN 3 */
+
+    /* USER CODE BEGIN 3 */
 	  uint32_t big_mag[6] = {0};
 	  int index[6] = {0};
 	  int freq_counter = 0;
@@ -275,6 +296,8 @@ int main(void)
 	  float sec = 0;
 	  int freq_1 = 0;
 	  int freq_2 = 0;
+	  //waveform = 0: sine
+	  //waveform = 1: triangle
       int waveform_1 = 0;
       int waveform_2 = 0;
 	  for(int i = 2; i < 512; ++i)
@@ -311,7 +334,7 @@ int main(void)
 			  waveform_1 = 0;
 			  waveform_2 = 0;
 			  freq_1 = index[0];
-			  if(big_mag[1]<10000)
+			  if(big_mag[1] < 10000)
 			  {
 				  freq_2 = index[0];
 			  }
@@ -395,8 +418,8 @@ int main(void)
 			  break;
 		  }
 	  }
-	  dds[0] = freq_1;
-	  dds[1] = freq_2;
+	  set_freq(send_ad9833, freq_1, waveform_1);
+	  set_freq(send_ad9834, freq_2, waveform_2);
   }
   /* USER CODE END 3 */
 }
@@ -444,7 +467,7 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  HAL_RCC_MCOConfig(RCC_MCO_PG10, RCC_MCO1SOURCE_HSE, RCC_MCODIV_1);
+  HAL_RCC_MCOConfig(RCC_MCO1, RCC_MCO1SOURCE_HSE, RCC_MCODIV_1);
 }
 
 /**
@@ -695,8 +718,8 @@ static void MX_SPI3_Init(void)
   hspi3.Instance = SPI3;
   hspi3.Init.Mode = SPI_MODE_MASTER;
   hspi3.Init.Direction = SPI_DIRECTION_2LINES;
-  hspi3.Init.DataSize = SPI_DATASIZE_8BIT;
-  hspi3.Init.CLKPolarity = SPI_POLARITY_LOW;
+  hspi3.Init.DataSize = SPI_DATASIZE_16BIT;
+  hspi3.Init.CLKPolarity = SPI_POLARITY_HIGH;
   hspi3.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi3.Init.NSS = SPI_NSS_SOFT;
   hspi3.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16;
@@ -984,7 +1007,6 @@ static void MX_GPIO_Init(void)
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOF_CLK_ENABLE();
-  __HAL_RCC_GPIOG_CLK_ENABLE();
   __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
@@ -993,18 +1015,10 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(con_GPIO_Port, con_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, AD9833_EN_Pin|AD9834_EN_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, SIPO_CS_Pin|XDAC_CS_Pin, GPIO_PIN_RESET);
-
-  /*Configure GPIO pin : PG10 */
-  GPIO_InitStruct.Pin = GPIO_PIN_10;
-  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  GPIO_InitStruct.Alternate = GPIO_AF0_MCO;
-  HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
 
   /*Configure GPIO pin : con_Pin */
   GPIO_InitStruct.Pin = con_Pin;
@@ -1013,8 +1027,16 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(con_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : PA10 */
-  GPIO_InitStruct.Pin = GPIO_PIN_10;
+  /*Configure GPIO pin : PA8 */
+  GPIO_InitStruct.Pin = GPIO_PIN_8;
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Alternate = GPIO_AF0_MCO;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : AD9833_EN_Pin AD9834_EN_Pin */
+  GPIO_InitStruct.Pin = AD9833_EN_Pin|AD9834_EN_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;

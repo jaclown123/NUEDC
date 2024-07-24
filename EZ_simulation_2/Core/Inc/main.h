@@ -59,6 +59,10 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define con_Pin GPIO_PIN_0
 #define con_GPIO_Port GPIOC
+#define AD9833_EN_Pin GPIO_PIN_9
+#define AD9833_EN_GPIO_Port GPIOA
+#define AD9834_EN_Pin GPIO_PIN_10
+#define AD9834_EN_GPIO_Port GPIOA
 #define SIPO_CS_Pin GPIO_PIN_8
 #define SIPO_CS_GPIO_Port GPIOB
 #define XDAC_CS_Pin GPIO_PIN_9
