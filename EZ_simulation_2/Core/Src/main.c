@@ -279,7 +279,7 @@ int main(void)
       int waveform_2 = 0;
 	  for(int i = 2; i < 510; ++i)
 	  {
-		  if((deal_mag[i]) > 2500)
+		  if((deal_mag[i]) > 2400)
 		  {
 			  if(deal_mag[i] > deal_mag[i-1] && deal_mag[i] > deal_mag[i+1])
 			  {
@@ -300,6 +300,8 @@ int main(void)
 	  {
 		  case 1:
 		  {
+			  waveform_1 = 0;
+			  waveform_2 = 0;
 			  for(int i = 0;i < 6; ++i)
 				  if(index[i] > 0)
 				  {
@@ -340,7 +342,7 @@ int main(void)
 		  case 4 :
 		  {
 			  waveform_1 = 1;
-			  waveform_2 = 1;
+			  waveform_2 = 0;
 			  for(int i = 0;i < 6; ++i)
 			  {
 				  if(big_mag[i] > sec)
@@ -365,6 +367,12 @@ int main(void)
 		  {
 			  waveform_1 = 1;
 			  waveform_2 = 1;
+			  if(index[0] == index[1] / 2 && index[0] == index[2] / 3 &&index[0] == index[3] / 5)
+			  {
+				  freq_1 = index[0];
+				  freq_2 = index[0];
+				  break;
+			  }
 			  for(int i = 0;i < 6; ++i)
 			  {
 				  if(big_mag[i] > sec)
@@ -387,14 +395,7 @@ int main(void)
 		  }
 	  }
 	  dds[0] = freq_1;
-//	  for(int i = 0;i < 6; ++i)
-//	  {
-//		  if(index[i] == 3 * freq_1 || index[i] == 5 * freq_1)
-//			  triang_1 ++;
-//		  if(index[i] == 3 * freq_2 || index[i] == 5 * freq_2)
-//			  triang_2 ++;
-//	  }
-
+	  dds[1] = freq_2;
   }
   /* USER CODE END 3 */
 }
