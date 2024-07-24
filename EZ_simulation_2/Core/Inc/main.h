@@ -57,6 +57,8 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define UI_SW3_Pin GPIO_PIN_13
+#define UI_SW3_GPIO_Port GPIOC
 #define con_Pin GPIO_PIN_0
 #define con_GPIO_Port GPIOC
 #define AD9833_EN_Pin GPIO_PIN_9

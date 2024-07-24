@@ -122,6 +122,11 @@ uint16_t awg_offset_level_buffer[16]={
     2048, 2048, 2048, 2048
 };
 float window[N];
+
+//static int freq_1 = 0;
+//static  freq_2 = 0;
+//static  waveform_1 = 0;//waveform = 0: sine, waveform = 1: triangle
+//static  waveform_2 = 0;
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -139,18 +144,14 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 void send_ad9834(uint16_t cmd)
 {
   HAL_GPIO_WritePin(AD9834_EN_GPIO_Port, AD9834_EN_Pin, GPIO_PIN_RESET);
-
   HAL_SPI_Transmit(&hspi3, (uint8_t*)&cmd, 1, 10);
-
   HAL_GPIO_WritePin(AD9834_EN_GPIO_Port, AD9834_EN_Pin, GPIO_PIN_SET);
 }
 void send_ad9833(uint16_t cmd)
 {
-  HAL_GPIO_WritePin(AD9834_EN_GPIO_Port, AD9834_EN_Pin, GPIO_PIN_RESET);
-
+  HAL_GPIO_WritePin(AD9833_EN_GPIO_Port, AD9833_EN_Pin, GPIO_PIN_RESET);
   HAL_SPI_Transmit(&hspi3, (uint8_t*)&cmd, 1, 10);
-
-  HAL_GPIO_WritePin(AD9834_EN_GPIO_Port, AD9834_EN_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(AD9833_EN_GPIO_Port, AD9833_EN_Pin, GPIO_PIN_SET);
 }
 void AFE_Offset_LDAC_Init()
 {
@@ -208,6 +209,142 @@ int roundToNearest5(int num)
     }
 }
 
+/*void set_freq_wave(float* deal_mag)
+{
+  int dds[2];
+  uint32_t big_mag[6] = {0};
+  int index[6] = {0};
+  int freq_counter = 0;
+  uint8_t k = 0;
+  float max = 0;
+  float sec = 0;
+  int freq_1 = 0;
+  int freq_2 = 0;
+  int waveform_1 = 0;//waveform = 0: sine, waveform = 1: triangle
+  int waveform_2 = 0;
+  for(int i = 2; i < 512; ++i)
+  {
+	  if((deal_mag[i]) > 2400)
+	  {
+		  if(deal_mag[i] > deal_mag[i-1] && deal_mag[i] > deal_mag[i+1])
+		  {
+			  big_mag[k] = deal_mag[i];
+			  index[k] = i;
+			  k++;
+		  }
+	  }
+	  if(k == 6) break;
+  }
+  for(int i = 0;i < 6; ++i)
+  {
+	  index[i] = ((index[i] * 0.97656) / 5) * 5;
+	  index[i] = roundToNearest5(index[i]);
+	  if(index[i] > 0) freq_counter ++;
+  }
+  switch(freq_counter)
+  {
+	  case 1:
+	  {
+		  waveform_1 = 0;
+		  waveform_2 = 0;
+		  freq_1 = index[0];
+		  freq_2 = index[0];
+		  break;
+	  }
+	  case 2 :
+	  {
+		  waveform_1 = 0;
+		  waveform_2 = 0;
+		  freq_1 = index[0];
+		  if(big_mag[1] < 10000)
+		  {
+			  freq_2 = index[0];
+		  }
+		  else
+		  {
+			  freq_2 = index[1];
+		  }
+		  break;
+	  }
+	  case 3:
+	  {
+		  waveform_1 = 0;
+		  waveform_2 = 1;
+		  freq_2 = 100;
+		  for(int i = 0;i < 6; ++i)
+		  {
+			  if(big_mag[i] > max)
+			  {
+				  max = big_mag[i];
+				  freq_1 = index[i];
+			  }
+			  if(freq_2 > index[i] && index[i] > 0)
+			  {
+				  freq_2 = index[i];
+			  }
+		  }
+		  break;
+	  }
+	  case 4 :
+	  {
+		  waveform_1 = 1;
+		  waveform_2 = 0;
+		  for(int i = 0;i < 6; ++i)
+		  {
+			  if(big_mag[i] > sec)
+			  {
+				  if(big_mag[i] > max)
+				  {
+					  sec = max;
+					  freq_2 = freq_1;
+					  max = big_mag[i];
+					  freq_1 = index[i];
+				  }
+				  else
+				  {
+					  sec = big_mag[i];
+					  freq_2 = index[i];
+				  }
+			  }
+		  }
+		  break;
+	  }
+	  case 5 : case 6:
+	  {
+		  waveform_1 = 1;
+		  waveform_2 = 1;
+		  if(index[0] == index[1] / 2 && index[0] == index[2] / 3 &&index[0] == index[3] / 5)
+		  {
+			  freq_1 = index[0];
+			  freq_2 = index[0];
+			  break;
+		  }
+		  for(int i = 0;i < 6; ++i)
+		  {
+			  if(big_mag[i] > sec)
+			  {
+				  if(big_mag[i] > max)
+				  {
+					  sec = max;
+					  freq_2 = freq_1;
+					  max = big_mag[i];
+					  freq_1 = index[i];
+				  }
+				  else
+				  {
+					  sec = big_mag[i];
+					  freq_2 = index[i];
+				  }
+			  }
+		  }
+		  break;
+	  }
+  }
+  set_freq(send_ad9833, freq_1, waveform_1);
+  set_freq(send_ad9834, freq_2, waveform_2);
+  dds[0] = freq_1;
+}*/
+
 /* USER CODE END 0 */
 
 /**
@@ -257,15 +394,15 @@ int main(void)
   {
 	  window[i] = 0.5 - 0.5 * arm_cos_f32(i * (2 * PI / (N - 1)));
   }
-  AFE_Offset_LDAC_Init();
-  AFE_Gain(3);
-  AFE_Offset(256);
+//AFE_Offset_LDAC_Init();
+//AFE_Gain(3);
+//AFE_Offset(256);
 
   float fft_in[N] = {0};
   float fft_out[N] = {0};
   float deal_mag[N] = {0};
-  int dds[2];
-  //set_freq(send_data,100000,1);
+
+  GPIO_PinState prev = 0;
 
 
   /* USER CODE END 2 */
@@ -277,149 +414,155 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  uint32_t big_mag[6] = {0};
-	  int index[6] = {0};
-	  int freq_counter = 0;
-	  set_sm_freq(1e6 , &htim6);
-	  samp(adc_buffer, 1025, &htim6, &hadc1);
-	  uint16_t temp_buffer[1025];
-	  make_8to16(adc_buffer, 2050, temp_buffer);
-	  int_to_float(temp_buffer + 1, fft_in);
-	  for (int i = 0; i < N; ++i)
-	  {
-	  	  fft_in[i] *= window[i];
-	  }
-	  fft_transfer(fft_in, fft_out, deal_mag);
+	  GPIO_PinState curr = HAL_GPIO_ReadPin(UI_SW3_GPIO_Port, UI_SW3_Pin);
+      if(1/*curr && !prev*/)
+      {
+		  set_sm_freq(1e6 , &htim6);
+		  samp(adc_buffer, 1025, &htim6, &hadc1);
+		  uint16_t temp_buffer[1025];
+		  make_8to16(adc_buffer, 2050, temp_buffer);
+		  int_to_float(temp_buffer + 1, fft_in);
+		  for (int i = 0; i < N; ++i)
+		  {
+			  fft_in[i] *= window[i];
+		  }
+		  fft_transfer(fft_in, fft_out, deal_mag);
 
-	  uint8_t k = 0;
-	  float max = 0;
-	  float sec = 0;
-	  int freq_1 = 0;
-	  int freq_2 = 0;
-	  //waveform = 0: sine
-	  //waveform = 1: triangle
-      int waveform_1 = 0;
-      int waveform_2 = 0;
-	  for(int i = 2; i < 512; ++i)
-	  {
-		  if((deal_mag[i]) > 2400)
+		  int freq_1 = 0;
+		  int freq_2 = 0;
+		  int waveform_1 = 0;//waveform = 0: sine, waveform = 1: triangle
+		  int waveform_2 = 0;
+
+		  float max = 0;
+		  float sec = 0;
+		  /*set_freq_wave(deal_mag);*/
+		  uint32_t big_mag[6] = {0};
+		  int index[6] = {0};
+		  int freq_counter = 0;
+		  uint8_t k = 0;
+		  for(int i = 2; i < 512; ++i)
 		  {
-			  if(deal_mag[i] > deal_mag[i-1] && deal_mag[i] > deal_mag[i+1])
+			  if((deal_mag[i]) > 2400)
 			  {
-				  big_mag[k] = deal_mag[i];
-				  index[k] = i;
-				  k++;
-			  }
-		  }
-		  if(k == 6) break;
-	  }
-	  for(int i = 0;i < 6; ++i)
-	  {
-		  index[i] = ((index[i] * 0.97656) / 5) * 5;
-		  index[i] = roundToNearest5(index[i]);
-		  if(index[i] > 0) freq_counter ++;
-	  }
-	  switch(freq_counter)
-	  {
-		  case 1:
-		  {
-			  waveform_1 = 0;
-			  waveform_2 = 0;
-			  freq_1 = index[0];
-			  freq_2 = index[0];
-			  break;
-		  }
-		  case 2 :
-		  {
-			  waveform_1 = 0;
-			  waveform_2 = 0;
-			  freq_1 = index[0];
-			  if(big_mag[1] < 10000)
-			  {
-				  freq_2 = index[0];
-			  }
-			  else
-			  {
-				  freq_2 = index[1];
-			  }
-			  break;
-		  }
-		  case 3:
-		  {
-			  waveform_1 = 0;
-			  waveform_2 = 1;
-			  freq_2 = 100;
-			  for(int i = 0;i < 6; ++i)
-			  {
-				  if(big_mag[i] > max)
+				  if(deal_mag[i] > deal_mag[i-1] && deal_mag[i] > deal_mag[i+1])
 				  {
-					  max = big_mag[i];
-					  freq_1 = index[i];
-				  }
-				  if(freq_2 > index[i] && index[i] > 0)
-				  {
-					  freq_2 = index[i];
+					  big_mag[k] = deal_mag[i];
+					  index[k] = i;
+					  k++;
 				  }
 			  }
-			  break;
+			  if(k == 6) break;
 		  }
-		  case 4 :
+		  for(int i = 0;i < 6; ++i)
 		  {
-			  waveform_1 = 1;
-			  waveform_2 = 0;
-			  for(int i = 0;i < 6; ++i)
-			  {
-				  if(big_mag[i] > sec)
-				  {
-					  if(big_mag[i] > max)
-					  {
-						  sec = max;
-						  freq_2 = freq_1;
-						  max = big_mag[i];
-						  freq_1 = index[i];
-					  }
-					  else
-					  {
-						  sec = big_mag[i];
-						  freq_2 = index[i];
-					  }
-				  }
-			  }
-			  break;
+			  index[i] = ((index[i] * 0.97656) / 5) * 5;
+			  index[i] = roundToNearest5(index[i]);
+			  if(index[i] > 0) freq_counter ++;
 		  }
-		  case 5 : case 6:
+
+		  switch(freq_counter)
 		  {
-			  waveform_1 = 1;
-			  waveform_2 = 1;
-			  if(index[0] == index[1] / 2 && index[0] == index[2] / 3 &&index[0] == index[3] / 5)
+			  case 1:
 			  {
+				  waveform_1 = 0;
+				  waveform_2 = 0;
 				  freq_1 = index[0];
 				  freq_2 = index[0];
 				  break;
 			  }
-			  for(int i = 0;i < 6; ++i)
+			  case 2 :
 			  {
-				  if(big_mag[i] > sec)
+				  waveform_1 = 0;
+				  waveform_2 = 0;
+				  freq_1 = index[0];
+				  if(big_mag[1] < 10000)
+				  {
+					  freq_2 = index[0];
+				  }
+				  else
+				  {
+					  freq_2 = index[1];
+				  }
+				  break;
+			  }
+			  case 3:
+			  {
+				  waveform_1 = 0;
+				  waveform_2 = 1;
+				  freq_2 = 100;
+				  for(int i = 0;i < 6; ++i)
 				  {
 					  if(big_mag[i] > max)
 					  {
-						  sec = max;
-						  freq_2 = freq_1;
 						  max = big_mag[i];
 						  freq_1 = index[i];
 					  }
-					  else
+					  if(freq_2 > index[i] && index[i] > 0)
 					  {
-						  sec = big_mag[i];
 						  freq_2 = index[i];
 					  }
 				  }
+				  break;
 			  }
-			  break;
+			  case 4 :
+			  {
+				  waveform_1 = 1;
+				  waveform_2 = 0;
+				  for(int i = 0;i < 6; ++i)
+				  {
+					  if(big_mag[i] > sec)
+					  {
+						  if(big_mag[i] > max)
+						  {
+							  sec = max;
+							  freq_2 = freq_1;
+							  max = big_mag[i];
+							  freq_1 = index[i];
+						  }
+						  else
+						  {
+							  sec = big_mag[i];
+							  freq_2 = index[i];
+						  }
+					  }
+				  }
+				  break;
+			  }
+			  case 5 : case 6:
+			  {
+				  waveform_1 = 1;
+				  waveform_2 = 1;
+				  if(index[0] == index[1] / 2 && index[0] == index[2] / 3 &&index[0] == index[3] / 5)
+				  {
+					  freq_1 = index[0];
+					  freq_2 = index[0];
+					  break;
+				  }
+				  for(int i = 0;i < 6; ++i)
+				  {
+					  if(big_mag[i] > sec)
+					  {
+						  if(big_mag[i] > max)
+						  {
+							  sec = max;
+							  freq_2 = freq_1;
+							  max = big_mag[i];
+							  freq_1 = index[i];
+						  }
+						  else
+						  {
+							  sec = big_mag[i];
+							  freq_2 = index[i];
+						  }
+					  }
+				  }
+				  break;
+			  }
 		  }
+		  set_freq(send_ad9833, freq_1, waveform_1);
+		  set_freq(send_ad9834, freq_2, waveform_2);
 	  }
-	  set_freq(send_ad9833, freq_1, waveform_1);
-	  set_freq(send_ad9834, freq_2, waveform_2);
+      prev = curr;
   }
   /* USER CODE END 3 */
 }
@@ -1006,8 +1149,8 @@ static void MX_GPIO_Init(void)
 /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOF_CLK_ENABLE();
   __HAL_RCC_GPIOC_CLK_ENABLE();
+  __HAL_RCC_GPIOF_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
@@ -1019,6 +1162,12 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, SIPO_CS_Pin|XDAC_CS_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : UI_SW3_Pin */
+  GPIO_InitStruct.Pin = UI_SW3_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(UI_SW3_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : con_Pin */
   GPIO_InitStruct.Pin = con_Pin;
