@@ -100,7 +100,6 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
   if (huart != huart_reg)
     return;
-
   auto end = rx_buf + Size;
   for (auto* p = rx_buf; p < end; )
   {

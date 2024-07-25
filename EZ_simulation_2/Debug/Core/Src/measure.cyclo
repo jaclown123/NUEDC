@@ -8,5 +8,8 @@
 ../Core/Src/measure.c:155:10:get_fit_sm_hz	1
 ../Core/Src/measure.c:161:6:int_to_float	2
 ../Core/Src/measure.c:167:6:fft_transfer	1
-../Core/Src/measure.c:178:6:LIA_transfer	4
-../Core/Src/measure.c:217:6:fft_to_1024	1
+../Core/Src/measure.c:178:7:LIA_get_mag	2
+../Core/Src/measure.c:192:7:get_LIA_freq	9
+../Core/Src/measure.c:228:6:LIA_transfer	4
+../Core/Src/measure.c:267:6:fft_to_1024	1
+../Core/Src/measure.c:279:6:set_phase	1

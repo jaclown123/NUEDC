@@ -175,6 +175,56 @@ void fft_transfer(float* fft_in, float* fft_out, float* fft_mag)
 	arm_cmplx_mag_f32(fft_out, fft_mag, N);
 }
 
+float LIA_get_mag(float* signal, float* temp, float* coef)
+{
+	float cos_basis[N];
+	float sin_basis[N];
+	float dc[N];
+	float cos_sqr = 0;
+	float sin_sqr = 0;
+	for (int i = 0; i < N; i++) {
+		dc[i] = 1;
+	}
+	float mag =lia_fitting(signal,sin_basis,cos_basis,dc,N);
+	return mag;
+}
+
+float get_LIA_freq(float* signal, int freq_in , float* yiyandingzhen)
+{
+	float dir = -1;
+	float grad = 0.01;
+	float test_freq = freq_in ;
+	float cos_basis[N];
+	float sin_basis[N];
+	float dc[N];
+	float mag[200] = {0};
+	float freq_buffer[200] = {0};
+	int head = 0;
+	do
+	{
+		for (int i = 0; i < N; i++) {
+			cos_basis[i] = arm_cos_f32(i * (2 * PI / 1000) * test_freq);
+			sin_basis[i] = arm_sin_f32(i * (2 * PI / 1000) * test_freq);
+			dc[i] = 1;
+		}
+		mag[head] = lia_fitting(signal, sin_basis, cos_basis, dc, N);
+		freq_buffer[head] = test_freq;
+		if (head != 0 && mag[head] < mag[head - 1])
+		{
+			test_freq = freq_buffer[head - 1];
+			dir *= -1;
+		}
+		if (head >= 2 && mag[head - 1] > mag[head - 2]&& mag[head - 1] > mag[head] )
+		{
+			*yiyandingzhen = freq_buffer[head - 1];
+			return;
+		}
+		head ++;
+		test_freq += grad * dir;
+		if(test_freq == freq_in + 1||test_freq == freq_in - 1) return;
+	} while(1);
+}
+
 void LIA_transfer(float* fft_in, int num, float* coef)
 {
 	float cos_basis[N];
@@ -226,7 +276,10 @@ void fft_to_1024(float * in_data ,float * out_data, float * mo , uint32_t index 
 	arm_max_f32(mo, 1024, &max_value, &index);
 }
 
+void set_phase()
+{
 
+}
 /**
   * @brief  set sigma_delta modulation
  */

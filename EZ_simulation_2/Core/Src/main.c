@@ -61,6 +61,7 @@ TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim6;
 TIM_HandleTypeDef htim7;
+TIM_HandleTypeDef htim15;
 DMA_HandleTypeDef hdma_tim2_ch1;
 
 UART_HandleTypeDef huart2;
@@ -85,6 +86,7 @@ static void MX_COMP3_Init(void);
 static void MX_TIM3_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_TIM7_Init(void);
+static void MX_TIM15_Init(void);
 /* USER CODE BEGIN PFP */
 
 #define N 1024
@@ -111,6 +113,8 @@ static void MX_TIM7_Init(void);
 #define AWG_GAIN_3  0b00010000
 #define AWG_GAIN_4  0b00110000
 
+#define nop asm("NOP\n\r")
+
 uint8_t adc_buffer[2050];
 uint8_t gain_state;
 static uint8_t now_level;
@@ -123,6 +127,8 @@ uint16_t awg_offset_level_buffer[16]={
 };
 float window[N];
 
+volatile float freq_big;
+volatile float freq_small;
 //static int freq_1 = 0;
 //static  freq_2 = 0;
 //static  waveform_1 = 0;//waveform = 0: sine, waveform = 1: triangle
@@ -153,19 +159,79 @@ void send_ad9833(uint16_t cmd)
   HAL_SPI_Transmit(&hspi3, (uint8_t*)&cmd, 1, 10);
   HAL_GPIO_WritePin(AD9833_EN_GPIO_Port, AD9833_EN_Pin, GPIO_PIN_SET);
 }
-void AFE_Offset_LDAC_Init()
+void fankui(uint16_t * gotsmoke , ADC_HandleTypeDef * hadc , TIM_HandleTypeDef * htim ,long long int freq ,void (*send_data)(uint16_t) , int waveform )
+{
+	float temp[1024] = {0};
+	samp(gotsmoke, 1025, htim, hadc);
+	int_to_float(gotsmoke + 1, temp);
+
+	int freq_buffer[100] = {0};
+	int mo[100] = {0};
+	float k = 1;
+	float direction = -1;
+	int head = 0;
+	float now_freq = freq;
+
+	//mo[head] = api_mo;
+	freq_buffer[head] = now_freq;
+	head++;
+	while(1)
+	{
+		now_freq += k * direction;
+		set_freq(send_data, now_freq, waveform);
+		samp(gotsmoke, 1025, htim, hadc);
+		int_to_float(gotsmoke + 1, temp);
+		//mo[head] = api_mo;
+		freq_buffer[head] = now_freq;
+		if (mo[head] < mo[head - 1])
+		{
+			direction *= -1;
+			now_freq = freq_buffer[head - 1];
+			if ( head >=2 &&mo[head - 1] > mo[head - 2] )
+				{
+					set_freq(send_data, freq_buffer[head - 1], waveform);
+					break;
+				}
+
+		}
+		if (head == 100)
+			{
+				set_freq(send_data, freq, waveform);
+				break;
+			}
+		head++;
+	}
+
+}
+
+void get_nop(float phase, float freq, int n, TIM_HandleTypeDef* htim)
+{
+	n = (int)(phase * 1e7 / 24 / freq);
+	htim->Instance->ARR = n - 1;
+	HAL_TIM_Base_Start(&htim15);
+    set_freq(send_ad9834, freq_big, 0);
+}
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim)
+{
+	if(htim != &htim15)
+		return;
+	set_freqset_freq(send_ad9833, freq_small, 0);
+}
+
+/*void AFE_Offset_LDAC_Init()
 {
   uint8_t cmd[2]={144,0};
   HAL_GPIO_WritePin(XDAC_CS_GPIO_Port, XDAC_CS_Pin, GPIO_PIN_RESET);
   HAL_SPI_Transmit(&hspi3, cmd, 2, 1000);
   HAL_GPIO_WritePin(XDAC_CS_GPIO_Port, XDAC_CS_Pin, GPIO_PIN_SET);
-}
+}*/
 /**
   * @brief  set AFE gain
   * @param  gain_level uint8_t from 1 to 6, bigger number bigger gain, gain is 1/3, 1, 3, 9.5, 19, 39,
   *                    with a extra 1/5 decrease
   */
-void AFE_Gain(uint8_t gain_level){
+/*void AFE_Gain(uint8_t gain_level){
     if (gain_level<=0 || gain_level>6){
         return;
     }
@@ -179,12 +245,12 @@ void AFE_Gain(uint8_t gain_level){
     HAL_SPI_Transmit(&hspi3, &gain_state, 1, 1000);
     HAL_GPIO_WritePin(SIPO_CS_GPIO_Port, SIPO_CS_Pin, GPIO_PIN_SET);
     }
-}
+}*/
 /**
   * @brief  set AFE offset
   * @param  offset_level uint16_t from 0 to 4095, 12bit DAC with Vref is 5V
   */
-void AFE_Offset(uint16_t offset_level){
+/*void AFE_Offset(uint16_t offset_level){
   if (offset_level <0 || offset_level >= 4096) {
     return ;
   }
@@ -196,7 +262,7 @@ void AFE_Offset(uint16_t offset_level){
     HAL_SPI_Transmit(&hspi3, AFE_cmd, 2, 1000);
     HAL_GPIO_WritePin(XDAC_CS_GPIO_Port, XDAC_CS_Pin, GPIO_PIN_SET);
   }
-}
+}*/
 
 int roundToNearest5(int num)
 {
@@ -207,143 +273,8 @@ int roundToNearest5(int num)
     else {
         return num - remainder;
     }
-}
 
-/*void set_freq_wave(float* deal_mag)
-{
-  int dds[2];
-  uint32_t big_mag[6] = {0};
-  int index[6] = {0};
-  int freq_counter = 0;
-  uint8_t k = 0;
-  float max = 0;
-  float sec = 0;
-  int freq_1 = 0;
-  int freq_2 = 0;
-  int waveform_1 = 0;//waveform = 0: sine, waveform = 1: triangle
-  int waveform_2 = 0;
-  for(int i = 2; i < 512; ++i)
-  {
-	  if((deal_mag[i]) > 2400)
-	  {
-		  if(deal_mag[i] > deal_mag[i-1] && deal_mag[i] > deal_mag[i+1])
-		  {
-			  big_mag[k] = deal_mag[i];
-			  index[k] = i;
-			  k++;
-		  }
-	  }
-	  if(k == 6) break;
-  }
-  for(int i = 0;i < 6; ++i)
-  {
-	  index[i] = ((index[i] * 0.97656) / 5) * 5;
-	  index[i] = roundToNearest5(index[i]);
-	  if(index[i] > 0) freq_counter ++;
-  }
-  switch(freq_counter)
-  {
-	  case 1:
-	  {
-		  waveform_1 = 0;
-		  waveform_2 = 0;
-		  freq_1 = index[0];
-		  freq_2 = index[0];
-		  break;
-	  }
-	  case 2 :
-	  {
-		  waveform_1 = 0;
-		  waveform_2 = 0;
-		  freq_1 = index[0];
-		  if(big_mag[1] < 10000)
-		  {
-			  freq_2 = index[0];
-		  }
-		  else
-		  {
-			  freq_2 = index[1];
-		  }
-		  break;
-	  }
-	  case 3:
-	  {
-		  waveform_1 = 0;
-		  waveform_2 = 1;
-		  freq_2 = 100;
-		  for(int i = 0;i < 6; ++i)
-		  {
-			  if(big_mag[i] > max)
-			  {
-				  max = big_mag[i];
-				  freq_1 = index[i];
-			  }
-			  if(freq_2 > index[i] && index[i] > 0)
-			  {
-				  freq_2 = index[i];
-			  }
-		  }
-		  break;
-	  }
-	  case 4 :
-	  {
-		  waveform_1 = 1;
-		  waveform_2 = 0;
-		  for(int i = 0;i < 6; ++i)
-		  {
-			  if(big_mag[i] > sec)
-			  {
-				  if(big_mag[i] > max)
-				  {
-					  sec = max;
-					  freq_2 = freq_1;
-					  max = big_mag[i];
-					  freq_1 = index[i];
-				  }
-				  else
-				  {
-					  sec = big_mag[i];
-					  freq_2 = index[i];
-				  }
-			  }
-		  }
-		  break;
-	  }
-	  case 5 : case 6:
-	  {
-		  waveform_1 = 1;
-		  waveform_2 = 1;
-		  if(index[0] == index[1] / 2 && index[0] == index[2] / 3 &&index[0] == index[3] / 5)
-		  {
-			  freq_1 = index[0];
-			  freq_2 = index[0];
-			  break;
-		  }
-		  for(int i = 0;i < 6; ++i)
-		  {
-			  if(big_mag[i] > sec)
-			  {
-				  if(big_mag[i] > max)
-				  {
-					  sec = max;
-					  freq_2 = freq_1;
-					  max = big_mag[i];
-					  freq_1 = index[i];
-				  }
-				  else
-				  {
-					  sec = big_mag[i];
-					  freq_2 = index[i];
-				  }
-			  }
-		  }
-		  break;
-	  }
-  }
-  set_freq(send_ad9833, freq_1, waveform_1);
-  set_freq(send_ad9834, freq_2, waveform_2);
-  dds[0] = freq_1;
-}*/
+}
 
 /* USER CODE END 0 */
 
@@ -388,12 +319,14 @@ int main(void)
   MX_TIM3_Init();
   MX_TIM2_Init();
   MX_TIM7_Init();
+  MX_TIM15_Init();
   /* USER CODE BEGIN 2 */
 
   for (int i = 0; i < N; ++i)
   {
 	  window[i] = 0.5 - 0.5 * arm_cos_f32(i * (2 * PI / (N - 1)));
   }
+
 //AFE_Offset_LDAC_Init();
 //AFE_Gain(3);
 //AFE_Offset(256);
@@ -402,7 +335,7 @@ int main(void)
   float fft_out[N] = {0};
   float deal_mag[N] = {0};
 
-  GPIO_PinState prev = 0;
+  GPIO_PinState prev = 1;
 
 
   /* USER CODE END 2 */
@@ -415,7 +348,7 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 	  GPIO_PinState curr = HAL_GPIO_ReadPin(UI_SW3_GPIO_Port, UI_SW3_Pin);
-      if(1/*curr && !prev*/)
+      if(curr && !prev)
       {
 		  set_sm_freq(1e6 , &htim6);
 		  samp(adc_buffer, 1025, &htim6, &hadc1);
@@ -506,8 +439,8 @@ int main(void)
 			  }
 			  case 4 :
 			  {
-				  waveform_1 = 1;
-				  waveform_2 = 0;
+				  waveform_1 = 0;
+				  waveform_2 = 1;
 				  for(int i = 0;i < 6; ++i)
 				  {
 					  if(big_mag[i] > sec)
@@ -559,11 +492,21 @@ int main(void)
 				  break;
 			  }
 		  }
-		  set_freq(send_ad9833, freq_1, waveform_1);
-		  set_freq(send_ad9834, freq_2, waveform_2);
+		  set_freq(send_ad9833, freq_1 * 1e3, waveform_1);
+		  set_freq(send_ad9834, freq_2 * 1e3, waveform_2);
 	  }
       prev = curr;
+
+//      set_sm_freq(1e6 , &htim6);
+//      samp(adc_buffer, 1025, &htim6, &hadc1);
+//      uint16_t temp_buffer[1025];
+//	    make_8to16(adc_buffer, 2050, temp_buffer);
+//	    int_to_float(temp_buffer + 1, fft_in);
+//	    float yiyandingzhen = 0;
+//      get_LIA_freq(fft_in, 25,&yiyandingzhen);
+//      float dz = 1 * yiyandingzhen;
   }
+
   /* USER CODE END 3 */
 }
 
@@ -1066,6 +1009,52 @@ static void MX_TIM7_Init(void)
 }
 
 /**
+  * @brief TIM15 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM15_Init(void)
+{
+
+  /* USER CODE BEGIN TIM15_Init 0 */
+
+  /* USER CODE END TIM15_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM15_Init 1 */
+
+  /* USER CODE END TIM15_Init 1 */
+  htim15.Instance = TIM15;
+  htim15.Init.Prescaler = 0;
+  htim15.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim15.Init.Period = 65535;
+  htim15.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim15.Init.RepetitionCounter = 0;
+  htim15.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim15) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim15, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_UPDATE;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim15, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM15_Init 2 */
+
+  /* USER CODE END TIM15_Init 2 */
+
+}
+
+/**
   * @brief USART2 Initialization Function
   * @param None
   * @retval None
@@ -1161,12 +1150,15 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOA, AD9833_EN_Pin|AD9834_EN_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, SIPO_CS_Pin|XDAC_CS_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(SIPO_CS_GPIO_Port, SIPO_CS_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(XDAC_CS_GPIO_Port, XDAC_CS_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin : UI_SW3_Pin */
   GPIO_InitStruct.Pin = UI_SW3_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(UI_SW3_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : con_Pin */

@@ -14,7 +14,7 @@
 void set_freq(void (*send_data)(uint16_t), long long int freq, int waveform)
 {
 
-	long long int temp = (freq * 268435456 / 25000);
+	long long int temp = (freq * 268435456 / 25000000);
 	uint32_t fr = temp;
 	uint16_t lsb = 0x4000;
 	uint16_t msb = 0x4000;
