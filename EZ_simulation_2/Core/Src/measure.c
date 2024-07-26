@@ -189,10 +189,10 @@ float LIA_get_mag(float* signal, float* temp, float* coef)
 	return mag;
 }
 
-float get_LIA_freq(float* signal, int freq_in , float* yiyandingzhen)
+float get_LIA_freq(float* signal, int freq_in , float* dingzhen)
 {
 	float dir = -1;
-	float grad = 0.01;
+	float grad = 0.1;
 	float test_freq = freq_in ;
 	float cos_basis[N];
 	float sin_basis[N];
@@ -216,7 +216,7 @@ float get_LIA_freq(float* signal, int freq_in , float* yiyandingzhen)
 		}
 		if (head >= 2 && mag[head - 1] > mag[head - 2]&& mag[head - 1] > mag[head] )
 		{
-			*yiyandingzhen = freq_buffer[head - 1];
+			*dingzhen = freq_buffer[head - 1];
 			return;
 		}
 		head ++;
@@ -298,8 +298,6 @@ void set_phase()
     }
   }
 }*/
-
-
 
 /**
   * @brief  set AWG offset

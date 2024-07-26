@@ -65,6 +65,10 @@ void Error_Handler(void);
 #define AD9833_EN_GPIO_Port GPIOA
 #define AD9834_EN_Pin GPIO_PIN_10
 #define AD9834_EN_GPIO_Port GPIOA
+#define LCD_DC_Pin GPIO_PIN_11
+#define LCD_DC_GPIO_Port GPIOC
+#define UI_SW0_Pin GPIO_PIN_2
+#define UI_SW0_GPIO_Port GPIOD
 #define SIPO_CS_Pin GPIO_PIN_8
 #define SIPO_CS_GPIO_Port GPIOB
 #define XDAC_CS_Pin GPIO_PIN_9

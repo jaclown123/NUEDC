@@ -120,11 +120,10 @@ void bottoncheck()
 
   switch(state_2)
   {
-  case 0:9+6+++
+  case 0:
 	  if(!prev_2 && curr_2)
 	  {
 		  state_2 = 1;
-
 	  }
 	  if(flag == 1)
 	  {
@@ -165,7 +164,6 @@ void bottoncheck()
       break;
   }
   prev_2 = curr_2;
-
 }
 /* USER CODE END 0 */
 

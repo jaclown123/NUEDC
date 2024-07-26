@@ -55,6 +55,7 @@ DAC_HandleTypeDef hdac1;
 
 I2C_HandleTypeDef hi2c1;
 
+SPI_HandleTypeDef hspi1;
 SPI_HandleTypeDef hspi3;
 
 TIM_HandleTypeDef htim2;
@@ -87,6 +88,7 @@ static void MX_TIM3_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_TIM7_Init(void);
 static void MX_TIM15_Init(void);
+static void MX_SPI1_Init(void);
 /* USER CODE BEGIN PFP */
 
 #define N 1024
@@ -129,6 +131,7 @@ float window[N];
 
 volatile float freq_big;
 volatile float freq_small;
+int phase_set = 0;
 //static int freq_1 = 0;
 //static  freq_2 = 0;
 //static  waveform_1 = 0;//waveform = 0: sine, waveform = 1: triangle
@@ -149,16 +152,20 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 
 void send_ad9834(uint16_t cmd)
 {
+	//SPI3->CR1 |= 1<<1;
   HAL_GPIO_WritePin(AD9834_EN_GPIO_Port, AD9834_EN_Pin, GPIO_PIN_RESET);
   HAL_SPI_Transmit(&hspi3, (uint8_t*)&cmd, 1, 10);
   HAL_GPIO_WritePin(AD9834_EN_GPIO_Port, AD9834_EN_Pin, GPIO_PIN_SET);
 }
 void send_ad9833(uint16_t cmd)
 {
+	//SPI3->CR1 |= 1<<1;
   HAL_GPIO_WritePin(AD9833_EN_GPIO_Port, AD9833_EN_Pin, GPIO_PIN_RESET);
   HAL_SPI_Transmit(&hspi3, (uint8_t*)&cmd, 1, 10);
   HAL_GPIO_WritePin(AD9833_EN_GPIO_Port, AD9833_EN_Pin, GPIO_PIN_SET);
 }
+
+
 void fankui(uint16_t * gotsmoke , ADC_HandleTypeDef * hadc , TIM_HandleTypeDef * htim ,long long int freq ,void (*send_data)(uint16_t) , int waveform )
 {
 	float temp[1024] = {0};
@@ -171,7 +178,6 @@ void fankui(uint16_t * gotsmoke , ADC_HandleTypeDef * hadc , TIM_HandleTypeDef *
 	float direction = -1;
 	int head = 0;
 	float now_freq = freq;
-
 	//mo[head] = api_mo;
 	freq_buffer[head] = now_freq;
 	head++;
@@ -192,7 +198,6 @@ void fankui(uint16_t * gotsmoke , ADC_HandleTypeDef * hadc , TIM_HandleTypeDef *
 					set_freq(send_data, freq_buffer[head - 1], waveform);
 					break;
 				}
-
 		}
 		if (head == 100)
 			{
@@ -201,7 +206,6 @@ void fankui(uint16_t * gotsmoke , ADC_HandleTypeDef * hadc , TIM_HandleTypeDef *
 			}
 		head++;
 	}
-
 }
 
 void get_nop(float phase, float freq, int n, TIM_HandleTypeDef* htim)
@@ -219,20 +223,21 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim)
 	set_freqset_freq(send_ad9833, freq_small, 0);
 }
 
-/*void AFE_Offset_LDAC_Init()
+void AFE_Offset_LDAC_Init()
 {
-  uint8_t cmd[2]={144,0};
+  uint16_t cmd=0x9000;
   HAL_GPIO_WritePin(XDAC_CS_GPIO_Port, XDAC_CS_Pin, GPIO_PIN_RESET);
-  HAL_SPI_Transmit(&hspi3, cmd, 2, 1000);
+  HAL_SPI_Transmit(&hspi3, (uint8_t*)&cmd, 1, 10);
   HAL_GPIO_WritePin(XDAC_CS_GPIO_Port, XDAC_CS_Pin, GPIO_PIN_SET);
-}*/
+}
 /**
   * @brief  set AFE gain
   * @param  gain_level uint8_t from 1 to 6, bigger number bigger gain, gain is 1/3, 1, 3, 9.5, 19, 39,
   *                    with a extra 1/5 decrease
   */
-/*void AFE_Gain(uint8_t gain_level){
-    if (gain_level<=0 || gain_level>6){
+void AFE_Gain(uint8_t gain_level){
+
+	if (gain_level<=0 || gain_level>6){
         return;
     }
     else {
@@ -241,28 +246,27 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim)
         AFE_GAIN_4, AFE_GAIN_5, AFE_GAIN_6
     };
     gain_state |= Gain_Levels[gain_level-1];
+    uint16_t state=gain_state;
     HAL_GPIO_WritePin(SIPO_CS_GPIO_Port, SIPO_CS_Pin, GPIO_PIN_RESET);
-    HAL_SPI_Transmit(&hspi3, &gain_state, 1, 1000);
+    HAL_SPI_Transmit(&hspi3, (uint8_t*)&state, 1, 10);
     HAL_GPIO_WritePin(SIPO_CS_GPIO_Port, SIPO_CS_Pin, GPIO_PIN_SET);
     }
-}*/
+}
 /**
   * @brief  set AFE offset
   * @param  offset_level uint16_t from 0 to 4095, 12bit DAC with Vref is 5V
   */
-/*void AFE_Offset(uint16_t offset_level){
+void AFE_Offset(uint16_t offset_level){
   if (offset_level <0 || offset_level >= 4096) {
     return ;
   }
   else {
-    uint8_t AFE_cmd[2];
-    AFE_cmd[0]= DAC_AFE_OFF2*16+offset_level/256;
-    AFE_cmd[1]= offset_level%256;
+    uint16_t AFE_cmd=((DAC_AFE_OFF2*16+offset_level/256)<<8)+offset_level%256;
     HAL_GPIO_WritePin(XDAC_CS_GPIO_Port, XDAC_CS_Pin, GPIO_PIN_RESET);
-    HAL_SPI_Transmit(&hspi3, AFE_cmd, 2, 1000);
+    HAL_SPI_Transmit(&hspi3, (uint8_t*)&AFE_cmd, 1, 10);
     HAL_GPIO_WritePin(XDAC_CS_GPIO_Port, XDAC_CS_Pin, GPIO_PIN_SET);
   }
-}*/
+}
 
 int roundToNearest5(int num)
 {
@@ -273,7 +277,6 @@ int roundToNearest5(int num)
     else {
         return num - remainder;
     }
-
 }
 
 /* USER CODE END 0 */
@@ -320,6 +323,7 @@ int main(void)
   MX_TIM2_Init();
   MX_TIM7_Init();
   MX_TIM15_Init();
+  MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
 
   for (int i = 0; i < N; ++i)
@@ -327,16 +331,25 @@ int main(void)
 	  window[i] = 0.5 - 0.5 * arm_cos_f32(i * (2 * PI / (N - 1)));
   }
 
-//AFE_Offset_LDAC_Init();
-//AFE_Gain(3);
-//AFE_Offset(256);
+	SPI3->CR1 &= ~(1<<1);
+    //SPI3->CR2 &= ~(1<<11);
+	AFE_Offset_LDAC_Init();
+	AFE_Gain(3);
+	AFE_Offset(256);
+	SPI3->CR1 |= 1<<1;
+	//SPI3->CR2 |= 1<<11;
 
+	//setup();
   float fft_in[N] = {0};
   float fft_out[N] = {0};
   float deal_mag[N] = {0};
+  int counter = 0;
+  GPIO_PinState prev_1 = 1;
+  GPIO_PinState prev_2 = 1;
+  long long int freq_test = 10000;
 
-  GPIO_PinState prev = 1;
 
+  //set_n_freq(send_ad9834,send_ad9833, freq_test, 3);
 
   /* USER CODE END 2 */
 
@@ -347,8 +360,10 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  GPIO_PinState curr = HAL_GPIO_ReadPin(UI_SW3_GPIO_Port, UI_SW3_Pin);
-      if(curr && !prev)
+	  //HAL_GPIO_WritePin(KR4_GPIO_Port,KR4_Pin,GPIO_PIN_SET);
+	  GPIO_PinState curr_1 = HAL_GPIO_ReadPin(UI_SW0_GPIO_Port, UI_SW0_Pin);
+	  GPIO_PinState curr_2 = HAL_GPIO_ReadPin(UI_SW3_GPIO_Port, UI_SW3_Pin);
+      if(curr_1 && !prev_1)
       {
 		  set_sm_freq(1e6 , &htim6);
 		  samp(adc_buffer, 1025, &htim6, &hadc1);
@@ -405,6 +420,14 @@ int main(void)
 			  }
 			  case 2 :
 			  {
+				  if(index[0] == 100 && index[1] ==300)
+				  {
+					  waveform_1 = 1;
+					  waveform_2 = 1;
+					  freq_1 = index[0];
+					  freq_2 = index[0];
+					  break;
+				  }
 				  waveform_1 = 0;
 				  waveform_2 = 0;
 				  freq_1 = index[0];
@@ -420,6 +443,14 @@ int main(void)
 			  }
 			  case 3:
 			  {
+				  if(big_mag[1]>13000 && big_mag[1]<50000 && big_mag[1]>3000 && big_mag[1]<50000)
+				  {
+					  waveform_1 = 1;
+					  waveform_2 = 1;
+					  freq_1 = index[0];
+					  freq_2 = index[0];
+					  break;
+				  }
 				  waveform_1 = 0;
 				  waveform_2 = 1;
 				  freq_2 = 100;
@@ -430,15 +461,23 @@ int main(void)
 						  max = big_mag[i];
 						  freq_1 = index[i];
 					  }
-					  if(freq_2 > index[i] && index[i] > 0)
+					  if(index[0] * 3 == index[1] && index[0] * 5 == index[2])
 					  {
-						  freq_2 = index[i];
+						  freq_2 = index[0];
 					  }
 				  }
 				  break;
 			  }
 			  case 4 :
 			  {
+				  if(index[0] * 3 == index[1] && index[0] * 5 == index[2] && 100 < index[3])
+				  {
+					  waveform_1 = 1;
+					  waveform_2 = 1;
+					  freq_1 = index[0];
+					  freq_2 = index[0];
+					  break;
+				  }
 				  waveform_1 = 0;
 				  waveform_2 = 1;
 				  for(int i = 0;i < 6; ++i)
@@ -465,12 +504,12 @@ int main(void)
 			  {
 				  waveform_1 = 1;
 				  waveform_2 = 1;
-				  if(index[0] == index[1] / 2 && index[0] == index[2] / 3 &&index[0] == index[3] / 5)
-				  {
-					  freq_1 = index[0];
-					  freq_2 = index[0];
-					  break;
-				  }
+//				  if(index[0] == index[1] / 2 && index[0] == index[2] / 3 &&index[0] == index[3] / 5)
+//				  {
+//					  freq_1 = index[0];
+//					  freq_2 = index[0];
+//					  break;
+//				  }
 				  for(int i = 0;i < 6; ++i)
 				  {
 					  if(big_mag[i] > sec)
@@ -489,22 +528,64 @@ int main(void)
 						  }
 					  }
 				  }
+				  if(sec < 50000) freq_2 = freq_1;
 				  break;
 			  }
 		  }
-		  set_freq(send_ad9833, freq_1 * 1e3, waveform_1);
-		  set_freq(send_ad9834, freq_2 * 1e3, waveform_2);
+		  set_freq(send_ad9833, freq_1 * 1000, waveform_1);
+		  set_freq(send_ad9834, freq_2 * 1000, waveform_2);
 	  }
-      prev = curr;
+      prev_1 = curr_1;
 
-//      set_sm_freq(1e6 , &htim6);
-//      samp(adc_buffer, 1025, &htim6, &hadc1);
-//      uint16_t temp_buffer[1025];
-//	    make_8to16(adc_buffer, 2050, temp_buffer);
-//	    int_to_float(temp_buffer + 1, fft_in);
-//	    float yiyandingzhen = 0;
-//      get_LIA_freq(fft_in, 25,&yiyandingzhen);
-//      float dz = 1 * yiyandingzhen;
+      if(curr_2 && !prev_2)
+      {
+          set_sm_freq(1e6 , &htim6);
+          samp(adc_buffer, 1025, &htim6, &hadc1);
+          uint16_t temp_buffer[1025];
+    	  make_8to16(adc_buffer, 2050, temp_buffer);
+    	  int_to_float(temp_buffer + 1, fft_in);
+		  for (int i = 0; i < N; ++i)
+		  {
+			  fft_in[i] *= window[i];
+		  }
+		  fft_transfer(fft_in, fft_out, deal_mag);
+
+    	  long long int freq_small = 0;
+    	  int m = 0;
+    	  int target[2];
+		  for(int i = 2; i < 512; ++i)
+		  {
+			  if((deal_mag[i]) > 40000)
+			  {
+				  if(deal_mag[i] > deal_mag[i-1] && deal_mag[i] > deal_mag[i+1])
+				  {
+					  target[m] = i;
+					  m++;
+				  }
+			  }
+			  if(m == 2) break;
+		  }
+    	  int freq_about = target[0] * 0.9766;
+    	  freq_small = roundToNearest5(freq_about);
+          //get_LIA_freq(fft_in, freq_about, &freq_small);
+		  int times;
+		  float freq_big = freq_small;
+		  for(int i = 2; i < (512 / freq_small); ++i)
+		  {
+			  float ntimes = i * freq_small * 1.024;
+			  int ntime = ntimes;
+			  if(ntime > 512) break;
+			  if((deal_mag[ntime]) > 20000)
+			  {
+                  freq_big = freq_small * i;
+                  times = i;
+			  }
+		  }
+		  counter += 5;
+		  if(counter == 180) counter = 0;
+          set_n_freq(send_ad9834, send_ad9833, freq_small * 1000, times, phase_set);
+      }
+      prev_2 = curr_2;
   }
 
   /* USER CODE END 3 */
@@ -782,6 +863,46 @@ static void MX_I2C1_Init(void)
   /* USER CODE BEGIN I2C1_Init 2 */
 
   /* USER CODE END I2C1_Init 2 */
+
+}
+
+/**
+  * @brief SPI1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_SPI1_Init(void)
+{
+
+  /* USER CODE BEGIN SPI1_Init 0 */
+
+  /* USER CODE END SPI1_Init 0 */
+
+  /* USER CODE BEGIN SPI1_Init 1 */
+
+  /* USER CODE END SPI1_Init 1 */
+  /* SPI1 parameter configuration*/
+  hspi1.Instance = SPI1;
+  hspi1.Init.Mode = SPI_MODE_MASTER;
+  hspi1.Init.Direction = SPI_DIRECTION_2LINES;
+  hspi1.Init.DataSize = SPI_DATASIZE_8BIT;
+  hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
+  hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
+  hspi1.Init.NSS = SPI_NSS_SOFT;
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
+  hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
+  hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
+  hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+  hspi1.Init.CRCPolynomial = 7;
+  hspi1.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
+  hspi1.Init.NSSPMode = SPI_NSS_PULSE_ENABLE;
+  if (HAL_SPI_Init(&hspi1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN SPI1_Init 2 */
+
+  /* USER CODE END SPI1_Init 2 */
 
 }
 
@@ -1141,10 +1262,11 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOF_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOD_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(con_GPIO_Port, con_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOC, con_Pin|LCD_DC_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, AD9833_EN_Pin|AD9834_EN_Pin, GPIO_PIN_RESET);
@@ -1161,18 +1283,18 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(UI_SW3_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : con_Pin */
-  GPIO_InitStruct.Pin = con_Pin;
+  /*Configure GPIO pins : con_Pin LCD_DC_Pin */
+  GPIO_InitStruct.Pin = con_Pin|LCD_DC_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(con_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PA8 */
   GPIO_InitStruct.Pin = GPIO_PIN_8;
   GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   GPIO_InitStruct.Alternate = GPIO_AF0_MCO;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
@@ -1182,6 +1304,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : UI_SW0_Pin */
+  GPIO_InitStruct.Pin = UI_SW0_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(UI_SW0_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : SIPO_CS_Pin XDAC_CS_Pin */
   GPIO_InitStruct.Pin = SIPO_CS_Pin|XDAC_CS_Pin;

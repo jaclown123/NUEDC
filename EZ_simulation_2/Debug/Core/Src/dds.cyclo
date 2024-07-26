@@ -1,1 +1,2 @@
-../Core/Src/dds.c:14:6:set_freq	8
+../Core/Src/dds.c:15:6:set_n_freq	11
+../Core/Src/dds.c:74:6:set_freq	8
