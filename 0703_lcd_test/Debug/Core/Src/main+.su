@@ -1,0 +1,15 @@
+D:/download/7.8_lcd/0708_code/0703_lcd_lib/Adafruit_GFX.h:149:8:void Adafruit_GFX::setCursor(int16_t, int16_t)	16	static
+D:/download/7.8_lcd/0708_code/0703_lcd_lib/Adafruit_GFX.h:171:8:void Adafruit_GFX::setTextColor(uint16_t, uint16_t)	16	static
+D:/download/7.8_lcd/0708_code/0703_lcd_lib/Adafruit_SPITFT.h:178:3:Adafruit_SPITFT::~Adafruit_SPITFT()	16	static
+../Core/Src/main+.cpp:17:6:void lcd_callback(SpiCmd, uint8_t*, size_t)	32	static
+../Core/Src/main+.cpp:95:6:void setup()	16	static
+../Core/Src/main+.cpp:128:6:void lcd_show_picture(uint16_t, uint16_t, uint16_t, uint16_t, const unsigned char*)	40	static
+../Core/Src/main+.cpp:139:6:void lcd_show_num(int)	16	static
+../Core/Src/main+.cpp:146:6:void lcd_show_str(int16_t, int16_t, const char*)	24	static
+../Core/Src/main+.cpp:152:6:void lcd_show_black(int16_t, int16_t, int16_t, int16_t)	32	static
+../Core/Src/main+.cpp:156:6:void loop()	4	static
+D:/download/7.8_lcd/0708_code/0703_lcd_lib/Adafruit_ST77xx.h:91:7:Adafruit_ST77xx::~Adafruit_ST77xx()	16	static
+D:/download/7.8_lcd/0708_code/0703_lcd_lib/Adafruit_ST7789.h:7:7:Adafruit_ST7789::~Adafruit_ST7789()	16	static
+../Core/Src/main+.cpp:159:1:void __static_initialization_and_destruction_0(int, int)	16	static
+../Core/Src/main+.cpp:159:1:cpp)	8	static
+../Core/Src/main+.cpp:159:1:cpp)	8	static
