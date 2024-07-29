@@ -98,15 +98,8 @@ int main(void)
   MX_TIM8_Init();
   /* USER CODE BEGIN 2 */
   setup();
-
-//  uint8_t Direction;
-//  uint16_t pre_Capturenum;
-//  uint16_t result = 0;
-//  int result_2 = 0;
-
   HAL_TIM_Encoder_Start(&htim8, TIM_CHANNEL_ALL);
   GPIO_PinState prev = GPIO_PIN_SET;
-  int flag = 0;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -115,7 +108,9 @@ int main(void)
   {
 	  int Direction =  __HAL_TIM_IS_TIM_COUNTING_DOWN(&htim8);   //读取电机转动方向
 	  int CaptureNumber = (short)__HAL_TIM_GET_COUNTER(&htim8);
-	  int counter = CaptureNumber / 4 % 6 + 1;
+	  int counter = CaptureNumber / 4 % 7 ;
+	  int mode = 0;
+	  int mode_t = 0;
 	  int ampl = 0;
 	  int ampl_t = 0;
 	  int modual = 0;
@@ -131,52 +126,67 @@ int main(void)
 
 	  switch(counter)
 	  {
-	  case 1:
+	  case 0:
 		  lcd_show_picture(101, 5 , 12, 20, MenuCursor16x16);
 		  lcd_show_picture(101, 25 , 12, 20, gImage_black);
 		  lcd_show_picture(101, 45 , 12, 20, gImage_black);
 		  lcd_show_picture(101, 65 , 12, 20, gImage_black);
 		  lcd_show_picture(101, 85 , 12, 20, gImage_black);
 		  lcd_show_picture(101, 105 , 12, 20, gImage_black);
+		  lcd_show_picture(101, 125 , 12, 20, gImage_black);
 		  break;
-	  case 2:
+	  case 1:
 		  lcd_show_picture(101, 25 , 12, 20, MenuCursor16x16);
 		  lcd_show_picture(101, 5 , 12, 20, gImage_black);
 		  lcd_show_picture(101, 45 , 12, 20, gImage_black);
 		  lcd_show_picture(101, 65 , 12, 20, gImage_black);
 		  lcd_show_picture(101, 85 , 12, 20, gImage_black);
 		  lcd_show_picture(101, 105 , 12, 20, gImage_black);
+		  lcd_show_picture(101, 125 , 12, 20, gImage_black);
 		  break;
-	  case 3:
+	  case 2:
 		  lcd_show_picture(101, 45 , 12, 20, MenuCursor16x16);
 		  lcd_show_picture(101, 25 , 12, 20, gImage_black);
 		  lcd_show_picture(101, 5 , 12, 20, gImage_black);
 		  lcd_show_picture(101, 65 , 12, 20, gImage_black);
 		  lcd_show_picture(101, 85 , 12, 20, gImage_black);
 		  lcd_show_picture(101, 105 , 12, 20, gImage_black);
+		  lcd_show_picture(101, 125 , 12, 20, gImage_black);
 		  break;
-	  case 4:
+	  case 3:
 		  lcd_show_picture(101, 65 , 12, 20, MenuCursor16x16);
 		  lcd_show_picture(101, 25 , 12, 20, gImage_black);
 		  lcd_show_picture(101, 45 , 12, 20, gImage_black);
 		  lcd_show_picture(101, 5 , 12, 20, gImage_black);
 		  lcd_show_picture(101, 85 , 12, 20, gImage_black);
 		  lcd_show_picture(101, 105 , 12, 20, gImage_black);
+		  lcd_show_picture(101, 125 , 12, 20, gImage_black);
 		  break;
-	  case 5:
+	  case 4:
 		  lcd_show_picture(101, 85 , 12, 20, MenuCursor16x16);
 		  lcd_show_picture(101, 25 , 12, 20, gImage_black);
 		  lcd_show_picture(101, 45 , 12, 20, gImage_black);
 		  lcd_show_picture(101, 65 , 12, 20, gImage_black);
 		  lcd_show_picture(101, 5 , 12, 20, gImage_black);
 		  lcd_show_picture(101, 105 , 12, 20, gImage_black);
+		  lcd_show_picture(101, 125 , 12, 20, gImage_black);
 		  break;
-	  case 6:
+	  case 5:
 		  lcd_show_picture(101, 105 , 12, 20, MenuCursor16x16);
 		  lcd_show_picture(101, 25 , 12, 20, gImage_black);
 		  lcd_show_picture(101, 45 , 12, 20, gImage_black);
 		  lcd_show_picture(101, 65 , 12, 20, gImage_black);
 		  lcd_show_picture(101, 85 , 12, 20, gImage_black);
+		  lcd_show_picture(101, 5 , 12, 20, gImage_black);
+		  lcd_show_picture(101, 125 , 12, 20, gImage_black);
+		  break;
+	  case 6:
+		  lcd_show_picture(101, 125 , 12, 20, MenuCursor16x16);
+		  lcd_show_picture(101, 25 , 12, 20, gImage_black);
+		  lcd_show_picture(101, 45 , 12, 20, gImage_black);
+		  lcd_show_picture(101, 65 , 12, 20, gImage_black);
+		  lcd_show_picture(101, 85 , 12, 20, gImage_black);
+		  lcd_show_picture(101, 105 , 12, 20, gImage_black);
 		  lcd_show_picture(101, 5 , 12, 20, gImage_black);
 		  break;
 	  }
@@ -185,15 +195,35 @@ int main(void)
 	  {
 		  switch(counter)
 		  {
+		  case 0:
+			  lcd_show_str(100, 145,"MODE:\n");
+			  while(1)
+			  {
+				  mode = abs((CaptureNumber) / 4 % 2 + 1);
+				  if(mode != mode_t)
+				  {
+					  mode_t = mode;
+					  if (mode < 2) lcd_show_str(101,165,"CW");
+					  else lcd_show_str(101,165,"AM");
+				  }
+				  CaptureNumber = (short)__HAL_TIM_GET_COUNTER(&htim8);
+				  if (HAL_GPIO_ReadPin(GPIOD, 1<<2) == GPIO_PIN_RESET)
+				  {
+					  lcd_show_str(101,185,"CONFIRM?\n");
+					  break;
+				  }
+			  }
+			  // api
+			  break;
 		  case 1:
 			  lcd_show_str(100, 145,"AMPL:\n");
 			  while (1)
 			  {
-				  phase = abs((CaptureNumber) / 4 % 10 * 100 + 100);
-				  if(phase != phase_t)
+				  ampl = abs((CaptureNumber) / 4 % 10 * 100 + 100);
+				  if(ampl != ampl_t)
 				  {
-					  phase_t = phase;
-					  lcd_show_num(phase);
+					  ampl_t = ampl;
+					  lcd_show_num(ampl);
 				  }
 				  CaptureNumber = (short)__HAL_TIM_GET_COUNTER(&htim8);
 				  if (HAL_GPIO_ReadPin(GPIOD, 1<<2) == GPIO_PIN_RESET)
@@ -208,11 +238,11 @@ int main(void)
 			  lcd_show_str(100, 145,"MODULATION:\n");
 			  while (1)
 			  {
-				  phase = abs((((CaptureNumber) / 4 )% 7) * 10 + 30);
-				  if(phase != phase_t)
+				  modual = abs((((CaptureNumber) / 4 )% 7) * 10 + 30);
+				  if(modual != modual_t)
 				  {
-					  phase_t = phase;
-					  lcd_show_num(phase);
+					  modual_t = modual;
+					  lcd_show_num(modual);
 				  }
 				  CaptureNumber = (short)__HAL_TIM_GET_COUNTER(&htim8);
 				  if (HAL_GPIO_ReadPin(GPIOD, 1<<2) == GPIO_PIN_RESET)
@@ -227,11 +257,11 @@ int main(void)
 			  lcd_show_str(100, 145,"DELAY:\n");
 			  while (1)
 			  {
-				  phase = abs((CaptureNumber) / 4 % 6 * 30 + 50);
-				  if(phase != phase_t)
+				  delay = abs((CaptureNumber) / 4 % 6 * 30 + 50);
+				  if(delay != delay_t)
 				  {
-					  phase_t = phase;
-					  lcd_show_num(phase);
+					  delay_t = delay;
+					  lcd_show_num(delay);
 				  }
 				  CaptureNumber = (short)__HAL_TIM_GET_COUNTER(&htim8);
 				  if (HAL_GPIO_ReadPin(GPIOD, 1<<2) == GPIO_PIN_RESET)
@@ -246,11 +276,11 @@ int main(void)
 			  lcd_show_str(100, 145,"ATTENUATION:\n");
 			  while (1)
 			  {
-				  phase = abs((CaptureNumber) / 4 % 11 * 2);
-				  if(phase != phase_t)
+				  atten = abs((CaptureNumber) / 4 % 11 * 2);
+				  if(atten != atten_t)
 				  {
-					  phase_t = phase;
-					  lcd_show_num(phase);
+					  atten_t = atten;
+					  lcd_show_num(atten);
 				  }
 				  CaptureNumber = (short)__HAL_TIM_GET_COUNTER(&htim8);
 				  if (HAL_GPIO_ReadPin(GPIOD, 1<<2) == GPIO_PIN_RESET)
@@ -265,11 +295,11 @@ int main(void)
 			  lcd_show_str(100, 145,"FREQUENCY:\n");
 			  while (1)
 			  {
-				  phase = abs((CaptureNumber) / 4 % 11 + 30);
-				  if(phase != phase_t)
+				  freq = abs((CaptureNumber) / 4 % 11 + 30);
+				  if(freq != freq_t)
 				  {
-					  phase_t = phase;
-					  lcd_show_num(phase);
+					  freq_t = freq;
+					  lcd_show_num(freq);
 				  }
 				  CaptureNumber = (short)__HAL_TIM_GET_COUNTER(&htim8);
 				  if (HAL_GPIO_ReadPin(GPIOD, 1<<2) == GPIO_PIN_RESET)
@@ -284,7 +314,7 @@ int main(void)
 			  lcd_show_str(100, 145,"INIT PHASE\n");
 			  while (1)
 			  {
-				  phase = abs((CaptureNumber) / 4 % 6 * 30);
+				  phase = abs((CaptureNumber) / 4 % 7 * 30);
 				  if(phase != phase_t)
 				  {
 					  phase_t = phase;
@@ -303,14 +333,13 @@ int main(void)
 		  while(HAL_GPIO_ReadPin(GPIOC, 1<<13) != 0)
 			  ;
 		  //lcd_show_picture(101, 105, 240, 100, gImage_black_big);
-		  lcd_show_black(100, 125, 239, 100);
+		  lcd_show_black(100, 145, 239, 100);
 	  }
 	  prev = curr;
-    /* USER CODE END WHILE */
 
+
+    /* USER CODE END WHILE */
     /* USER CODE BEGIN 3 */
-    //loop();
-	 // lcd_show_picture(0, 0, 120, 240, gImage_kun);
   }
   /* USER CODE END 3 */
 }

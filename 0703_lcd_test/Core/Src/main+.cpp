@@ -102,23 +102,27 @@ void setup()
   lcd.setCursor(115, 5);
   lcd.setTextColor(ST77XX_CYAN, ST77XX_BLACK);
   lcd.setTextSize(2);
-  lcd.printf("1.AMPL\n");
+  lcd.printf("0.BASIC\n");
   lcd_show_picture(101, 25, 12, 20, MenuCursor16x16);
   lcd.setCursor(115 , 25);
   lcd.setTextColor(ST77XX_CYAN, ST77XX_BLACK);
-  lcd.printf("2.MODULATION\n");
+  lcd.printf("1.AMPL\n");
   lcd.setCursor(115, 45);
   lcd.setTextColor(ST77XX_CYAN, ST77XX_BLACK);
-  lcd.printf("3.DELAY\n");
+  lcd.printf("2.MODULATION\n");
   lcd.setCursor(115, 65);
   lcd.setTextColor(ST77XX_CYAN, ST77XX_BLACK);
-  lcd.printf("4.ATTENUATION\n");
+  lcd.printf("3.DELAY\n");
   lcd.setCursor(115, 85);
   lcd.setTextColor(ST77XX_CYAN, ST77XX_BLACK);
-  lcd.printf("5.FREQUENCY\n");
+  lcd.printf("4.ATTENUATION\n");
   lcd.setCursor(115, 105);
   lcd.setTextColor(ST77XX_CYAN, ST77XX_BLACK);
+  lcd.printf("5.FREQUENCY\n");
+  lcd.setCursor(115, 125);
+  lcd.setTextColor(ST77XX_CYAN, ST77XX_BLACK);
   lcd.printf("6.INIT PHASE\n");
+
   lcd.setTextColor(ST77XX_RED, ST77XX_BLACK);
 
   //lcd.printf("Jerry's embedded\n");
