@@ -88,7 +88,6 @@ void bottoncheck()
   int curr_1 = HAL_GPIO_ReadPin(SW1_GPIO_Port, SW1_Pin);
   int curr_2 = HAL_GPIO_ReadPin(SW2_GPIO_Port, SW2_Pin);
 
-
   switch (state_1)
   {
   case 0:

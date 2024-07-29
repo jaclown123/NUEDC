@@ -30,14 +30,14 @@ Core/Src/main+.o: ../Core/Src/main+.cpp ../Core/Inc/main.h \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_tim_ex.h \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_ll_spi.h \
  ../Core/Inc/tft18.h \
- D:/download/7.8_lcd/0708_code/0703_lcd_lib/Adafruit_ST7789.h \
- D:/download/7.8_lcd/0708_code/0703_lcd_lib/Adafruit_ST77xx.h \
- D:/download/7.8_lcd/0708_code/0703_lcd_lib/Adafruit_GFX.h \
- D:/download/7.8_lcd/0708_code/0703_lcd_lib/Print.h \
- D:/download/7.8_lcd/0708_code/0703_lcd_lib/gfxfont.h \
- D:/download/7.8_lcd/0708_code/0703_lcd_lib/Adafruit_SPITFT.h \
- D:/download/7.8_lcd/0708_code/0703_lcd_lib/Adafruit_GFX.h \
- D:/download/7.8_lcd/0708_code/0703_lcd_lib/Adafruit_SPITFT_Macros.h
+ C:/Users/linyixin/Desktop/c2406/0708_code_lcd/0703_lcd_lib/Adafruit_ST7789.h \
+ C:/Users/linyixin/Desktop/c2406/0708_code_lcd/0703_lcd_lib/Adafruit_ST77xx.h \
+ C:/Users/linyixin/Desktop/c2406/0708_code_lcd/0703_lcd_lib/Adafruit_GFX.h \
+ C:/Users/linyixin/Desktop/c2406/0708_code_lcd/0703_lcd_lib/Print.h \
+ C:/Users/linyixin/Desktop/c2406/0708_code_lcd/0703_lcd_lib/gfxfont.h \
+ C:/Users/linyixin/Desktop/c2406/0708_code_lcd/0703_lcd_lib/Adafruit_SPITFT.h \
+ C:/Users/linyixin/Desktop/c2406/0708_code_lcd/0703_lcd_lib/Adafruit_GFX.h \
+ C:/Users/linyixin/Desktop/c2406/0708_code_lcd/0703_lcd_lib/Adafruit_SPITFT_Macros.h
 ../Core/Inc/main.h:
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal.h:
 ../Core/Inc/stm32g4xx_hal_conf.h:
@@ -70,11 +70,11 @@ Core/Src/main+.o: ../Core/Src/main+.cpp ../Core/Inc/main.h \
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_tim_ex.h:
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_ll_spi.h:
 ../Core/Inc/tft18.h:
-D:/download/7.8_lcd/0708_code/0703_lcd_lib/Adafruit_ST7789.h:
-D:/download/7.8_lcd/0708_code/0703_lcd_lib/Adafruit_ST77xx.h:
-D:/download/7.8_lcd/0708_code/0703_lcd_lib/Adafruit_GFX.h:
-D:/download/7.8_lcd/0708_code/0703_lcd_lib/Print.h:
-D:/download/7.8_lcd/0708_code/0703_lcd_lib/gfxfont.h:
-D:/download/7.8_lcd/0708_code/0703_lcd_lib/Adafruit_SPITFT.h:
-D:/download/7.8_lcd/0708_code/0703_lcd_lib/Adafruit_GFX.h:
-D:/download/7.8_lcd/0708_code/0703_lcd_lib/Adafruit_SPITFT_Macros.h:
+C:/Users/linyixin/Desktop/c2406/0708_code_lcd/0703_lcd_lib/Adafruit_ST7789.h:
+C:/Users/linyixin/Desktop/c2406/0708_code_lcd/0703_lcd_lib/Adafruit_ST77xx.h:
+C:/Users/linyixin/Desktop/c2406/0708_code_lcd/0703_lcd_lib/Adafruit_GFX.h:
+C:/Users/linyixin/Desktop/c2406/0708_code_lcd/0703_lcd_lib/Print.h:
+C:/Users/linyixin/Desktop/c2406/0708_code_lcd/0703_lcd_lib/gfxfont.h:
+C:/Users/linyixin/Desktop/c2406/0708_code_lcd/0703_lcd_lib/Adafruit_SPITFT.h:
+C:/Users/linyixin/Desktop/c2406/0708_code_lcd/0703_lcd_lib/Adafruit_GFX.h:
+C:/Users/linyixin/Desktop/c2406/0708_code_lcd/0703_lcd_lib/Adafruit_SPITFT_Macros.h:

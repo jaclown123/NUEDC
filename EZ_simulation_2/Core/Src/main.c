@@ -360,7 +360,6 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  //HAL_GPIO_WritePin(KR4_GPIO_Port,KR4_Pin,GPIO_PIN_SET);
 	  GPIO_PinState curr_1 = HAL_GPIO_ReadPin(UI_SW0_GPIO_Port, UI_SW0_Pin);
 	  GPIO_PinState curr_2 = HAL_GPIO_ReadPin(UI_SW3_GPIO_Port, UI_SW3_Pin);
       if(curr_1 && !prev_1)

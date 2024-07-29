@@ -49,7 +49,7 @@ extern const unsigned char gImage_Huashanpi[40960];
 #define GRAY2RGB16(t) ((t >> 3)|((t & ~3) << 3)|((t & ~7) << 8))
 #define GRAY2RGB16_hl(t) ((t << 5) | ((t&~3)<<11) | (t & ~7))
 
-
+extern const unsigned char gImage_elec[7500];
 extern const unsigned char gImage_Mario[40960];
 extern const unsigned char gImage_kun[57600];
 extern const unsigned char MenuCursor16x16[];

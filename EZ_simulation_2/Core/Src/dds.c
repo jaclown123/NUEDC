@@ -19,7 +19,7 @@ void set_n_freq(void (*send_9834)(uint16_t),void (*send_9833)(uint16_t),
 	uint32_t fr = temp_1;
 	uint16_t lsb = 0x4000;
 	uint16_t msb = 0x4000;
-	int rad_t = rad - 8.2 * freq * n * 0.36 / 1000;
+	int rad_t = rad - 8 * freq * n * 0.36 / 1000;
     if(rad_t < 0) rad_t += 360;
     if(rad_t > 360) rad_t -= 360;
     uint16_t phase = rad_t * 512 / 45;
@@ -78,8 +78,8 @@ void set_freq(void (*send_data)(uint16_t), long long int freq, int c)
 	//-6,-6,-9,
 
 	//9833
-	//
-	long long int temp = (freq * 268435456 / 25000000) - 6 - 3 * (freq / 1e4 - 2);
+	long long int temp = (freq * 268435456 / 25000560) ;
+	//long long int temp = (freq * 268435456 / 25000000) - 5 - 3 * (freq / 1e4 - 2);
 	uint32_t fr = temp;
 	uint16_t lsb = 0x4000;
 	uint16_t msb = 0x4000;
