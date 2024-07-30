@@ -1,0 +1,16 @@
+../Core/Src/main.c:156:6:AD9959_WriteData	6
+../Core/Src/main.c:196:6:Write_CFTW0	1
+../Core/Src/main.c:207:6:AD9959_Set_Fre	1
+../Core/Src/main.c:215:6:IntReset	1
+../Core/Src/main.c:223:6:Intserve	1
+../Core/Src/main.c:239:6:Write_ACR	1
+../Core/Src/main.c:250:6:AD9959_Set_Amp	1
+../Core/Src/main.c:258:6:Write_CPOW0	1
+../Core/Src/main.c:267:6:AD9959_Set_Phase	1
+../Core/Src/main.c:276:6:AD9959_Init	1
+../Core/Src/main.c:307:6:IO_Update	1
+../Core/Src/main.c:326:5:main	1
+../Core/Src/main.c:379:6:SystemClock_Config	3
+../Core/Src/main.c:426:13:MX_SPI3_Init	2
+../Core/Src/main.c:466:13:MX_GPIO_Init	1
+../Core/Src/main.c:523:6:Error_Handler	1

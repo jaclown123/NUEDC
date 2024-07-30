@@ -1,0 +1,16 @@
+../Core/Src/main.c:156:6:AD9959_WriteData	24	static
+../Core/Src/main.c:196:6:Write_CFTW0	24	static
+../Core/Src/main.c:207:6:AD9959_Set_Fre	24	static
+../Core/Src/main.c:215:6:IntReset	8	static
+../Core/Src/main.c:223:6:Intserve	8	static
+../Core/Src/main.c:239:6:Write_ACR	24	static
+../Core/Src/main.c:250:6:AD9959_Set_Amp	24	static
+../Core/Src/main.c:258:6:Write_CPOW0	24	static
+../Core/Src/main.c:267:6:AD9959_Set_Phase	24	static
+../Core/Src/main.c:276:6:AD9959_Init	16	static
+../Core/Src/main.c:307:6:IO_Update	8	static
+../Core/Src/main.c:326:5:main	8	static
+../Core/Src/main.c:379:6:SystemClock_Config	88	static
+../Core/Src/main.c:426:13:MX_SPI3_Init	8	static
+../Core/Src/main.c:466:13:MX_GPIO_Init	40	static
+../Core/Src/main.c:523:6:Error_Handler	4	static,ignoring_inline_asm
