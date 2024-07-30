@@ -23,6 +23,7 @@
 /* USER CODE BEGIN Includes */
 #include "dds.h"
 #include <math.h>
+#include <stm32g4xx_hal_cordic.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -41,16 +42,22 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+CORDIC_HandleTypeDef hcordic;
+
 CRC_HandleTypeDef hcrc;
 
+DAC_HandleTypeDef hdac2;
 DAC_HandleTypeDef hdac3;
+DMA_HandleTypeDef hdma_dac3_ch1;
 
 I2C_HandleTypeDef hi2c1;
+
+OPAMP_HandleTypeDef hopamp1;
 
 SPI_HandleTypeDef hspi3;
 
 TIM_HandleTypeDef htim1;
-TIM_HandleTypeDef htim8;
+TIM_HandleTypeDef htim15;
 
 UART_HandleTypeDef huart2;
 DMA_HandleTypeDef hdma_usart2_rx;
@@ -69,7 +76,10 @@ static void MX_TIM1_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_SPI3_Init(void);
 static void MX_DAC3_Init(void);
-static void MX_TIM8_Init(void);
+static void MX_OPAMP1_Init(void);
+static void MX_TIM15_Init(void);
+static void MX_CORDIC_Init(void);
+static void MX_DAC2_Init(void);
 /* USER CODE BEGIN PFP */
 void i2c_handler(uint8_t * data, size_t size)
 {
@@ -173,7 +183,7 @@ void pll_freq(uint8_t x , uint8_t y)
 		  {
 			  data[i] = 0;
 		  }
-		multisynth_program(y, 0, 1, 0, data , 58);
+		multisynth_program(y, 0, 1, 0, data , 42);
 		i2c_write(data, 9, 0xc0);
 		for (int i = 0 ; i < 9 ;++ i )
 		  {
@@ -189,6 +199,51 @@ void pll_freq(uint8_t x , uint8_t y)
 		data[0] = 3;
 		data[1] = 255 - (1);
 		i2c_write(data, 2, 0xc0);
+}
+#define length 15
+void set_dac(uint8_t offset)
+{
+
+	  uint32_t temp1[length];
+	  uint32_t temp2[length];
+	  uint16_t hsdac_buffer[length];
+	  for (int i = 0; i < length; ++i)
+	  {
+		  temp1[i] = (1llu<<32) / length * i;
+	  }
+
+	  HAL_CORDIC_CalculateZO(&hcordic, temp1, temp2, length,10);
+	  for (int i= 0 ; i < length; ++i)
+	  {
+		  hsdac_buffer[i] = (temp2[i] + (1<< 31))>>21;
+		  hsdac_buffer[i] += offset;
+	  }
+	  HAL_DAC_Start_DMA(&hdac3, DAC_CHANNEL_1, hsdac_buffer, length / 2, DAC_ALIGN_12B_R);
+//	  uint16_t dither[1000];
+//	  int time_dither = 4;
+//	  float e = 0;
+//	  for (int i = 0 ; i < 1000 ; ++i)
+//	  {
+//
+//		  e /= 2;
+//		  if (e <1.14 )
+//		  {
+//
+//			  dither[i] = 2;
+//			  e +=2 ;
+//		  }
+//		  else
+//		  {
+//			  dither[i] = 1;
+//			  e += 1;
+//		  }
+//	  }
+//	  uint16_t dither[10] = {4,4,4,4,5,4,4,4,4,5};
+//	  HAL_TIM_Base_Start_DMA(&htim15 ,dither , 1000 );
+	  //(&htim15)->Instance->ARR = (uint32_t)(4);
+//	  HAL_TIM_PWM_Start(&htim15, TIM_CHANNEL_1);
+	  HAL_TIM_Base_Start(&htim15);
+	  HAL_OPAMP_Start(&hopamp1);
 }
 /* USER CODE END PFP */
 
@@ -233,12 +288,38 @@ int main(void)
   MX_I2C1_Init();
   MX_SPI3_Init();
   MX_DAC3_Init();
-  MX_TIM8_Init();
+  MX_OPAMP1_Init();
+  MX_TIM15_Init();
+  MX_CORDIC_Init();
+  MX_DAC2_Init();
   /* USER CODE BEGIN 2 */
   //uint8_t data[9] = {0};
-  //set_freq(send_data, 5000000, 1);
-  pll_freq(32, 10);
+  //HAL_DAC_Start(&hdac2, DAC_CHANNEL_1);
+  //HAL_DAC_SetValue(&hdac2, DAC1_CHANNEL_1, DAC_ALIGN_12B_R, 4000);
+  pll_freq(40,10);
   set_freq(send_data, 1000000, 1);
+  set_dac(512);
+//  set_freq(send_data, 10000000, 1);
+//#define length 10
+//  uint32_t temp1[length];
+//  uint32_t temp2[length];
+//  uint16_t hsdac_buffer[length];
+//  for (int i = 0; i < length; ++i)
+//  {
+//	  temp1[i] = (1llu<<32) / length * i;
+//  }
+//
+//  HAL_CORDIC_CalculateZO(&hcordic, temp1, temp2, length,10);
+//  for (int i= 0 ; i < length; ++i)
+//  {
+//	  hsdac_buffer[i] = (temp2[i] + (1<< 31))>>21;
+//	  hsdac_buffer[i] += 512;
+//  }
+//  HAL_DAC_Start_DMA(&hdac3, DAC_CHANNEL_1, hsdac_buffer, length / 2, DAC_ALIGN_12B_R);
+//
+//  HAL_TIM_Base_Start(&htim15);
+//  (&htim15)->Instance->ARR = (uint32_t)(6);
+//  HAL_OPAMP_Start(&hopamp1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -300,6 +381,32 @@ void SystemClock_Config(void)
 }
 
 /**
+  * @brief CORDIC Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_CORDIC_Init(void)
+{
+
+  /* USER CODE BEGIN CORDIC_Init 0 */
+
+  /* USER CODE END CORDIC_Init 0 */
+
+  /* USER CODE BEGIN CORDIC_Init 1 */
+
+  /* USER CODE END CORDIC_Init 1 */
+  hcordic.Instance = CORDIC;
+  if (HAL_CORDIC_Init(&hcordic) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN CORDIC_Init 2 */
+
+  /* USER CODE END CORDIC_Init 2 */
+
+}
+
+/**
   * @brief CRC Initialization Function
   * @param None
   * @retval None
@@ -330,6 +437,53 @@ static void MX_CRC_Init(void)
   /* USER CODE BEGIN CRC_Init 2 */
 
   /* USER CODE END CRC_Init 2 */
+
+}
+
+/**
+  * @brief DAC2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_DAC2_Init(void)
+{
+
+  /* USER CODE BEGIN DAC2_Init 0 */
+
+  /* USER CODE END DAC2_Init 0 */
+
+  DAC_ChannelConfTypeDef sConfig = {0};
+
+  /* USER CODE BEGIN DAC2_Init 1 */
+
+  /* USER CODE END DAC2_Init 1 */
+
+  /** DAC Initialization
+  */
+  hdac2.Instance = DAC2;
+  if (HAL_DAC_Init(&hdac2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /** DAC channel OUT1 config
+  */
+  sConfig.DAC_HighFrequency = DAC_HIGH_FREQUENCY_INTERFACE_MODE_AUTOMATIC;
+  sConfig.DAC_DMADoubleDataMode = DISABLE;
+  sConfig.DAC_SignedFormat = DISABLE;
+  sConfig.DAC_SampleAndHold = DAC_SAMPLEANDHOLD_DISABLE;
+  sConfig.DAC_Trigger = DAC_TRIGGER_NONE;
+  sConfig.DAC_Trigger2 = DAC_TRIGGER_NONE;
+  sConfig.DAC_OutputBuffer = DAC_OUTPUTBUFFER_ENABLE;
+  sConfig.DAC_ConnectOnChipPeripheral = DAC_CHIPCONNECT_EXTERNAL;
+  sConfig.DAC_UserTrimming = DAC_TRIMMING_FACTORY;
+  if (HAL_DAC_ConfigChannel(&hdac2, &sConfig, DAC_CHANNEL_1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN DAC2_Init 2 */
+
+  /* USER CODE END DAC2_Init 2 */
 
 }
 
@@ -365,7 +519,7 @@ static void MX_DAC3_Init(void)
   sConfig.DAC_DMADoubleDataMode = ENABLE;
   sConfig.DAC_SignedFormat = DISABLE;
   sConfig.DAC_SampleAndHold = DAC_SAMPLEANDHOLD_DISABLE;
-  sConfig.DAC_Trigger = DAC_TRIGGER_NONE;
+  sConfig.DAC_Trigger = DAC_TRIGGER_T15_TRGO;
   sConfig.DAC_Trigger2 = DAC_TRIGGER_NONE;
   sConfig.DAC_OutputBuffer = DAC_OUTPUTBUFFER_DISABLE;
   sConfig.DAC_ConnectOnChipPeripheral = DAC_CHIPCONNECT_INTERNAL;
@@ -396,7 +550,7 @@ static void MX_I2C1_Init(void)
 
   /* USER CODE END I2C1_Init 1 */
   hi2c1.Instance = I2C1;
-  hi2c1.Init.Timing = 0x20C0EDFF;
+  hi2c1.Init.Timing = 0x30D293D6;
   hi2c1.Init.OwnAddress1 = 0;
   hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
   hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
@@ -425,6 +579,38 @@ static void MX_I2C1_Init(void)
   /* USER CODE BEGIN I2C1_Init 2 */
 
   /* USER CODE END I2C1_Init 2 */
+
+}
+
+/**
+  * @brief OPAMP1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_OPAMP1_Init(void)
+{
+
+  /* USER CODE BEGIN OPAMP1_Init 0 */
+
+  /* USER CODE END OPAMP1_Init 0 */
+
+  /* USER CODE BEGIN OPAMP1_Init 1 */
+
+  /* USER CODE END OPAMP1_Init 1 */
+  hopamp1.Instance = OPAMP1;
+  hopamp1.Init.PowerMode = OPAMP_POWERMODE_HIGHSPEED;
+  hopamp1.Init.Mode = OPAMP_FOLLOWER_MODE;
+  hopamp1.Init.NonInvertingInput = OPAMP_NONINVERTINGINPUT_DAC;
+  hopamp1.Init.InternalOutput = DISABLE;
+  hopamp1.Init.TimerControlledMuxmode = OPAMP_TIMERCONTROLLEDMUXMODE_DISABLE;
+  hopamp1.Init.UserTrimming = OPAMP_TRIMMING_FACTORY;
+  if (HAL_OPAMP_Init(&hopamp1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN OPAMP1_Init 2 */
+
+  /* USER CODE END OPAMP1_Init 2 */
 
 }
 
@@ -551,49 +737,48 @@ static void MX_TIM1_Init(void)
 }
 
 /**
-  * @brief TIM8 Initialization Function
+  * @brief TIM15 Initialization Function
   * @param None
   * @retval None
   */
-static void MX_TIM8_Init(void)
+static void MX_TIM15_Init(void)
 {
 
-  /* USER CODE BEGIN TIM8_Init 0 */
+  /* USER CODE BEGIN TIM15_Init 0 */
 
-  /* USER CODE END TIM8_Init 0 */
+  /* USER CODE END TIM15_Init 0 */
 
   TIM_ClockConfigTypeDef sClockSourceConfig = {0};
   TIM_MasterConfigTypeDef sMasterConfig = {0};
 
-  /* USER CODE BEGIN TIM8_Init 1 */
+  /* USER CODE BEGIN TIM15_Init 1 */
 
-  /* USER CODE END TIM8_Init 1 */
-  htim8.Instance = TIM8;
-  htim8.Init.Prescaler = 0;
-  htim8.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim8.Init.Period = 65535;
-  htim8.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim8.Init.RepetitionCounter = 0;
-  htim8.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-  if (HAL_TIM_Base_Init(&htim8) != HAL_OK)
+  /* USER CODE END TIM15_Init 1 */
+  htim15.Instance = TIM15;
+  htim15.Init.Prescaler = 0;
+  htim15.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim15.Init.Period = 4;
+  htim15.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim15.Init.RepetitionCounter = 0;
+  htim15.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim15) != HAL_OK)
   {
     Error_Handler();
   }
   sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
-  if (HAL_TIM_ConfigClockSource(&htim8, &sClockSourceConfig) != HAL_OK)
+  if (HAL_TIM_ConfigClockSource(&htim15, &sClockSourceConfig) != HAL_OK)
   {
     Error_Handler();
   }
   sMasterConfig.MasterOutputTrigger = TIM_TRGO_UPDATE;
-  sMasterConfig.MasterOutputTrigger2 = TIM_TRGO2_RESET;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-  if (HAL_TIMEx_MasterConfigSynchronization(&htim8, &sMasterConfig) != HAL_OK)
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim15, &sMasterConfig) != HAL_OK)
   {
     Error_Handler();
   }
-  /* USER CODE BEGIN TIM8_Init 2 */
+  /* USER CODE BEGIN TIM15_Init 2 */
 
-  /* USER CODE END TIM8_Init 2 */
+  /* USER CODE END TIM15_Init 2 */
 
 }
 
@@ -654,6 +839,7 @@ static void MX_DMA_Init(void)
   /* DMA controller clock enable */
   __HAL_RCC_DMAMUX1_CLK_ENABLE();
   __HAL_RCC_DMA2_CLK_ENABLE();
+  __HAL_RCC_DMA1_CLK_ENABLE();
 
   /* DMA interrupt init */
   /* DMA2_Channel8_IRQn interrupt configuration */
@@ -680,13 +866,13 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_SET);
 
   /*Configure GPIO pin : PA8 */
   GPIO_InitStruct.Pin = GPIO_PIN_8;
   GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
   GPIO_InitStruct.Alternate = GPIO_AF0_MCO;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
@@ -694,7 +880,7 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pin = GPIO_PIN_10;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */

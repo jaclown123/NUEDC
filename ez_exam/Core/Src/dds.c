@@ -29,9 +29,9 @@ void set_freq(void (*send_data)(uint16_t), long long int freq,int c)
 	send_data(lsb);//freq0
 	send_data(msb);
 	send_data(0xc000);
-//	send_data(0x2100);
-//	send_data(0x8000);//freq1
-//	send_data(0x8432);
+	send_data(0x2100);
+	send_data(0x8000);//freq1
+	send_data(0x8432);
 
 	//send_data(0x0028);
 	switch(c)
