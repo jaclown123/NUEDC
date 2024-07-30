@@ -43,8 +43,11 @@
 CORDIC_HandleTypeDef hcordic;
 
 DAC_HandleTypeDef hdac3;
+DAC_HandleTypeDef hdac4;
 DMA_HandleTypeDef hdma_dac3_ch1;
+DMA_HandleTypeDef hdma_dac4_ch1;
 
+OPAMP_HandleTypeDef hopamp4;
 OPAMP_HandleTypeDef hopamp6;
 
 TIM_HandleTypeDef htim15;
@@ -61,6 +64,8 @@ static void MX_DAC3_Init(void);
 static void MX_OPAMP6_Init(void);
 static void MX_TIM15_Init(void);
 static void MX_CORDIC_Init(void);
+static void MX_DAC4_Init(void);
+static void MX_OPAMP4_Init(void);
 /* USER CODE BEGIN PFP */
 #define SCLK_LOW HAL_GPIO_WritePin(GPIOC, 1<<0, GPIO_PIN_RESET)
 #define SCLK_HIGH HAL_GPIO_WritePin(GPIOC, 1<<0, GPIO_PIN_SET)
@@ -71,13 +76,13 @@ static void MX_CORDIC_Init(void);
 #define UPDATE_LOW HAL_GPIO_WritePin(GPIOC, 1<<3, GPIO_PIN_RESET)
 #define UPDATE_HIGH HAL_GPIO_WritePin(GPIOC, 1<<3, GPIO_PIN_SET)
 //typedef struct {
-//    // 这里假设csport是一个指向GPIO_TypeDef的指�?????????????
+//    // 这里假设csport是一个指向GPIO_TypeDef的指�??????????????
 //    GPIO_TypeDef* cs_port;
 //    uint16_t cs_pin;
 //    SPI_TypeDef * SPI_Hanlder;
 //
-//    // 在这里添加其他你�?????????????要的变量
-//    // 例如�?????????????
+//    // 在这里添加其他你�??????????????要的变量
+//    // 例如�??????????????
 //    // uint16_t cspin;
 //} AD9959_Handler;
 //
@@ -206,7 +211,7 @@ void AD9959_WriteData(uint8_t RegisterAddress, uint8_t NumberofRegisters, uint8_
 }
 void Write_CFTW0(uint32_t fre)
 {
-		uint8_t CFTW0_DATA[4] ={0x00,0x00,0x00,0x00};	//�м����??????
+		uint8_t CFTW0_DATA[4] ={0x00,0x00,0x00,0x00};	//�м����???????
 	  uint32_t Temp;
 	  Temp=(uint32_t)fre * 4294967296 / 500000000;
 	  CFTW0_DATA[3]=(uint8_t)Temp;
@@ -298,17 +303,17 @@ void AD9959_Init(void)
 //
 //	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_5|GPIO_Pin_2|GPIO_Pin_7|GPIO_Pin_6|GPIO_Pin_8|GPIO_Pin_9|GPIO_Pin_10;//初始化管脚PA2.3.4.5.6.7.8.9.10
 //	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 		 //推挽输出
-//	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;		 //IO口�?�度�?????50MHz
+//	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;		 //IO口�?�度�??????50MHz
 //	GPIO_Init(GPIOA, &GPIO_InitStructure);					 //根据设定参数初始化GPIOA
 //
 //	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_10;//初始化管脚PB0.1.10
 //	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 		 //推挽输出
-//	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;		 //IO口�?�度�?????2MHz
+//	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;		 //IO口�?�度�??????2MHz
 //	GPIO_Init(GPIOB, &GPIO_InitStructure);					 //根据设定参数初始化GPIOB
 //
 //	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;	//初始化管脚PC0
 //	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 		 //推挽输出
-//	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;		 //IO口�?�度�?????2MHz
+//	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;		 //IO口�?�度�??????2MHz
 //	GPIO_Init(GPIOC, &GPIO_InitStructure);					 //根据设定参数初始化GPIOC
 //
 	Intserve();  //IO口电平状态初始化
@@ -331,24 +336,26 @@ void IO_Update(void)
 	UPDATE_LOW;
 }
 #define length 10
+uint32_t hsdac_buffer[10] = {714, 791, 803, 745, 640, 527, 450, 438, 496, 601};
 void set_dac(uint16_t offset)
 {
 
-	  uint32_t temp1[length];
-	  uint32_t temp2[length];
-	  uint16_t hsdac_buffer[length];
-	  for (int i = 0; i < length; ++i)
-	  {
-		  temp1[i] = (1llu<<32) / length * i;
-	  }
-
-	  HAL_CORDIC_CalculateZO(&hcordic, temp1, temp2, length,10);
-	  for (int i= 0 ; i < length; ++i)
-	  {
-		  hsdac_buffer[i] = (temp2[i] + (1<< 31))>>21 / 10;
-		  hsdac_buffer[i] += offset;
-	  }
-	  HAL_DAC_Start_DMA(&hdac3, DAC_CHANNEL_1, hsdac_buffer, length / 2, DAC_ALIGN_12B_R);
+//	  uint32_t temp1[length];
+//	  uint32_t temp2[length];
+//	  uint16_t hsdac_buffer[length];
+//	  for (int i = 0; i < length; ++i)
+//	  {
+//		  temp1[i] = (1llu<<32) / length * i;
+//	  }
+//
+//	  HAL_CORDIC_CalculateZO(&hcordic, temp1, temp2, length,10);
+//	  for (int i= 0 ; i < length; ++i)
+//	  {
+//		  hsdac_buffer[i] = (temp2[i] + (1<< 31))>>21 / 10;
+//		  hsdac_buffer[i] += offset;
+//	  }
+	  HAL_DAC_Start_DMA(&hdac3, DAC_CHANNEL_1, hsdac_buffer, length, DAC_ALIGN_12B_R);
+	  HAL_DAC_Start_DMA(&hdac4, DAC_CHANNEL_1, hsdac_buffer, length , DAC_ALIGN_12B_R);
 //	  uint16_t dither[1000];
 //	  int time_dither = 4;
 //	  float e = 0;
@@ -372,18 +379,24 @@ void set_dac(uint16_t offset)
 //	  HAL_TIM_Base_Start_DMA(&htim15 ,dither , 1000 );
 	  //(&htim15)->Instance->ARR = (uint32_t)(4);
 //	  HAL_TIM_PWM_Start(&htim15, TIM_CHANNEL_1);
-	  HAL_TIM_Base_Start(&htim15);
+	  HAL_OPAMP_Start(&hopamp4);
 	  HAL_OPAMP_Start(&hopamp6);
+	  HAL_TIM_Base_Start(&htim15);
+
 }
-void ad9959_set(uint32_t freq, uint16_t amp , uint16_t t , uint16_t phase)
+//void ad9959_set(uint32_t freq, uint16_t amp , uint16_t t , uint16_t phase)
+//{
+//	AD9959_Init();
+//    AD9959_Set_Fre(0xf0, freq);
+//    AD9959_Set_Amp(0xf0, amp);
+//    AD9959_Set_Phase(0x10, 0);
+//    float final_phase = float()
+//    AD9959_Set_Phase(0x20, 0);
+//    IO_Update();
+//}
+void dac_set( )
 {
-	AD9959_Init();
-    AD9959_Set_Fre(0xf0, freq);
-    AD9959_Set_Amp(0xf0, amp);
-    AD9959_Set_Phase(0x10, 0);
-    uint16_t final_phase = t * 1e-9 +
-    AD9959_Set_Phase(0x20, 0);
-    IO_Update();
+
 }
 /* USER CODE END PFP */
 
@@ -426,6 +439,8 @@ int main(void)
   MX_OPAMP6_Init();
   MX_TIM15_Init();
   MX_CORDIC_Init();
+  MX_DAC4_Init();
+  MX_OPAMP4_Init();
   /* USER CODE BEGIN 2 */
 //  ad9959_init();
 //  ad9959_freq(30000000, 0x10);
@@ -575,6 +590,85 @@ static void MX_DAC3_Init(void)
 }
 
 /**
+  * @brief DAC4 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_DAC4_Init(void)
+{
+
+  /* USER CODE BEGIN DAC4_Init 0 */
+
+  /* USER CODE END DAC4_Init 0 */
+
+  DAC_ChannelConfTypeDef sConfig = {0};
+
+  /* USER CODE BEGIN DAC4_Init 1 */
+
+  /* USER CODE END DAC4_Init 1 */
+
+  /** DAC Initialization
+  */
+  hdac4.Instance = DAC4;
+  if (HAL_DAC_Init(&hdac4) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /** DAC channel OUT1 config
+  */
+  sConfig.DAC_HighFrequency = DAC_HIGH_FREQUENCY_INTERFACE_MODE_AUTOMATIC;
+  sConfig.DAC_DMADoubleDataMode = DISABLE;
+  sConfig.DAC_SignedFormat = DISABLE;
+  sConfig.DAC_SampleAndHold = DAC_SAMPLEANDHOLD_DISABLE;
+  sConfig.DAC_Trigger = DAC_TRIGGER_T15_TRGO;
+  sConfig.DAC_Trigger2 = DAC_TRIGGER_NONE;
+  sConfig.DAC_OutputBuffer = DAC_OUTPUTBUFFER_DISABLE;
+  sConfig.DAC_ConnectOnChipPeripheral = DAC_CHIPCONNECT_INTERNAL;
+  sConfig.DAC_UserTrimming = DAC_TRIMMING_FACTORY;
+  if (HAL_DAC_ConfigChannel(&hdac4, &sConfig, DAC_CHANNEL_1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN DAC4_Init 2 */
+
+  /* USER CODE END DAC4_Init 2 */
+
+}
+
+/**
+  * @brief OPAMP4 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_OPAMP4_Init(void)
+{
+
+  /* USER CODE BEGIN OPAMP4_Init 0 */
+
+  /* USER CODE END OPAMP4_Init 0 */
+
+  /* USER CODE BEGIN OPAMP4_Init 1 */
+
+  /* USER CODE END OPAMP4_Init 1 */
+  hopamp4.Instance = OPAMP4;
+  hopamp4.Init.PowerMode = OPAMP_POWERMODE_HIGHSPEED;
+  hopamp4.Init.Mode = OPAMP_FOLLOWER_MODE;
+  hopamp4.Init.NonInvertingInput = OPAMP_NONINVERTINGINPUT_DAC;
+  hopamp4.Init.InternalOutput = DISABLE;
+  hopamp4.Init.TimerControlledMuxmode = OPAMP_TIMERCONTROLLEDMUXMODE_DISABLE;
+  hopamp4.Init.UserTrimming = OPAMP_TRIMMING_FACTORY;
+  if (HAL_OPAMP_Init(&hopamp4) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN OPAMP4_Init 2 */
+
+  /* USER CODE END OPAMP4_Init 2 */
+
+}
+
+/**
   * @brief OPAMP6 Initialization Function
   * @param None
   * @retval None
@@ -627,7 +721,7 @@ static void MX_TIM15_Init(void)
   htim15.Instance = TIM15;
   htim15.Init.Prescaler = 0;
   htim15.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim15.Init.Period = 4;
+  htim15.Init.Period = 19;
   htim15.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim15.Init.RepetitionCounter = 0;
   htim15.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
