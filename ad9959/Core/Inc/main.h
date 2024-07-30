@@ -69,6 +69,22 @@ void Error_Handler(void);
 #define RESET_GPIO_Port GPIOA
 #define PWR_Pin GPIO_PIN_4
 #define PWR_GPIO_Port GPIOC
+#define PS0_Pin GPIO_PIN_5
+#define PS0_GPIO_Port GPIOC
+#define PS1_Pin GPIO_PIN_6
+#define PS1_GPIO_Port GPIOC
+#define PS2_Pin GPIO_PIN_7
+#define PS2_GPIO_Port GPIOC
+#define PS3_Pin GPIO_PIN_8
+#define PS3_GPIO_Port GPIOC
+#define SDIO1_Pin GPIO_PIN_9
+#define SDIO1_GPIO_Port GPIOC
+#define SDIO2_Pin GPIO_PIN_8
+#define SDIO2_GPIO_Port GPIOA
+#define SDIO3_Pin GPIO_PIN_9
+#define SDIO3_GPIO_Port GPIOA
+#define SDIO4_Pin GPIO_PIN_10
+#define SDIO4_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
 
