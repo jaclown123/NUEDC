@@ -98,22 +98,33 @@ void setup()
   lcd.init(240, 320);
   lcd.setRotation(1);
   lcd.fillScreen(ST77XX_BLACK);
-  lcd_show_picture(0, 0, 120, 240, gImage_kun);
-
-  lcd.setCursor(121, 0);
+  lcd_show_picture(0, 0, 50, 75, gImage_elec);
+  lcd.setCursor(115, 5);
   lcd.setTextColor(ST77XX_CYAN, ST77XX_BLACK);
   lcd.setTextSize(2);
-  lcd.printf("MODE:\n");
-  lcd_show_picture(121, 25, 12, 20, MenuCursor16x16);
-  lcd.setCursor(180 , 25);
-  lcd.setTextColor(ST77XX_WHITE, ST77XX_BLACK);
-  lcd.printf("BASE\n");
-  lcd.setCursor(180, 45);
-  lcd.setTextColor(ST77XX_WHITE, ST77XX_BLACK);
-  lcd.printf("EXTEND (1)\n");
-  lcd.setCursor(180, 65);
-  lcd.setTextColor(ST77XX_WHITE, ST77XX_BLACK);
-  lcd.printf("EXTEND (2)\n");
+  lcd.printf("0.BASIC\n");
+  lcd_show_picture(101, 25, 12, 20, MenuCursor16x16);
+  lcd.setCursor(115 , 25);
+  lcd.setTextColor(ST77XX_CYAN, ST77XX_BLACK);
+  lcd.printf("1.AMPL\n");
+  lcd.setCursor(115, 45);
+  lcd.setTextColor(ST77XX_CYAN, ST77XX_BLACK);
+  lcd.printf("2.MODULATION\n");
+  lcd.setCursor(115, 65);
+  lcd.setTextColor(ST77XX_CYAN, ST77XX_BLACK);
+  lcd.printf("3.DELAY\n");
+  lcd.setCursor(115, 85);
+  lcd.setTextColor(ST77XX_CYAN, ST77XX_BLACK);
+  lcd.printf("4.ATTENUATION\n");
+  lcd.setCursor(115, 105);
+  lcd.setTextColor(ST77XX_CYAN, ST77XX_BLACK);
+  lcd.printf("5.FREQUENCY\n");
+  lcd.setCursor(115, 125);
+  lcd.setTextColor(ST77XX_CYAN, ST77XX_BLACK);
+  lcd.printf("6.INIT PHASE\n");
+
+  lcd.setTextColor(ST77XX_RED, ST77XX_BLACK);
+
   //lcd.printf("Jerry's embedded\n");
 //  for (int i = 0; i != 120; ++i)
 //  {
@@ -138,9 +149,10 @@ void lcd_show_picture(uint16_t x, uint16_t y , uint16_t col , uint16_t row , con
 }
 void lcd_show_num(int n)
 {
-	lcd.setCursor(200, 145);
+	lcd.fillRect(150, 165, 230, 20, BLACK);
+	lcd.setCursor(150, 165);
 	lcd.printf("   ");
-	lcd.setCursor(200, 145);
+	lcd.setCursor(150, 165);
 	lcd.print(n);
 }
 void lcd_show_str(int16_t x, int16_t y,const char * lmf)
