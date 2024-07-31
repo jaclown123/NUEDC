@@ -84,11 +84,11 @@ all: main-build
 main-build: 0703_lcd_test.elf secondary-outputs
 
 dependents:
-	-cd C:/Users/linyixin/Desktop/c2406/0708_code_lcd/0703_lcd_lib/Debug && $(MAKE) all
+	-cd C:/Users/linyixin/Desktop/c2406/0708_code_lcd/0703_lcd_lib/Debug && $(MAKE) clean all
 
 # Tool invocations
-0703_lcd_test.elf 0703_lcd_test.map: $(OBJS) $(USER_OBJS) C:/Users/linyixin/Desktop/c2406/0708_code_lcd/0703_lcd_lib/Debug/lib0703_lcd_lib.a C:\Users\linyixin\Documents\GitHub\NUEDC\0703_lcd_test\STM32G474RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-g++ -o "0703_lcd_test.elf" @"objects.list" $(USER_OBJS) -Wl,--start-group $(LIBS) -Wl,--end-group -mcpu=cortex-m4 -T"C:\Users\linyixin\Documents\GitHub\NUEDC\0703_lcd_test\STM32G474RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="0703_lcd_test.map" -Wl,--gc-sections -static -L"C:\Users\linyixin\Desktop\c2406\0708_code_lcd\0703_lcd_lib\Debug" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+0703_lcd_test.elf 0703_lcd_test.map: $(OBJS) $(USER_OBJS) C:/Users/linyixin/Desktop/c2406/0708_code_lcd/0703_lcd_lib/Debug/lib0703_lcd_lib.a C:\Users\linyixin\Desktop\ad9959+lcd+\STM32G474RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-g++ -o "0703_lcd_test.elf" @"objects.list" $(USER_OBJS) -Wl,--start-group $(LIBS) -Wl,--end-group -mcpu=cortex-m4 -T"C:\Users\linyixin\Desktop\ad9959+lcd+\STM32G474RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="0703_lcd_test.map" -Wl,--gc-sections -static -L"C:\Users\linyixin\Desktop\c2406\0708_code_lcd\0703_lcd_lib\Debug" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

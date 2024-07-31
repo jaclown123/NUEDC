@@ -84,8 +84,8 @@ all: main-build
 main-build: ad9959.elf secondary-outputs
 
 # Tool invocations
-ad9959.elf ad9959.map: $(OBJS) $(USER_OBJS) D:\workspace\NUEDC\Embed_Study\ad9959\STM32G474RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-g++ -o "ad9959.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"D:\workspace\NUEDC\Embed_Study\ad9959\STM32G474RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="ad9959.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+ad9959.elf ad9959.map: $(OBJS) $(USER_OBJS) C:\Users\linyixin\Documents\GitHub\NUEDC\ad9959\STM32G474RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-g++ -o "ad9959.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\linyixin\Documents\GitHub\NUEDC\ad9959\STM32G474RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="ad9959.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
