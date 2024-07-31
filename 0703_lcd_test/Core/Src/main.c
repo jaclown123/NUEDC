@@ -22,6 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "tft18.h"
+#include <math.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -40,10 +41,18 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+DAC_HandleTypeDef hdac3;
+DMA_HandleTypeDef hdma_dac3_ch1;
+DMA_HandleTypeDef hdma_dac3_ch2;
+
+OPAMP_HandleTypeDef hopamp3;
+OPAMP_HandleTypeDef hopamp6;
+
 SPI_HandleTypeDef hspi1;
 DMA_HandleTypeDef hdma_spi1_tx;
 
 TIM_HandleTypeDef htim8;
+TIM_HandleTypeDef htim15;
 
 /* USER CODE BEGIN PV */
 
@@ -55,6 +64,10 @@ static void MX_GPIO_Init(void);
 static void MX_DMA_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_TIM8_Init(void);
+static void MX_DAC3_Init(void);
+static void MX_OPAMP3_Init(void);
+static void MX_OPAMP6_Init(void);
+static void MX_TIM15_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -73,10 +86,10 @@ static void MX_TIM8_Init(void);
 
 int mode = 0;
 int mode_t = 0;
-int ampl = 0;
-int ampl_t = 0;
-int modual = 0;
-int modual_t = 0;
+int ampl = 580;
+int ampl_t = 580;
+int modual = 100;
+int modual_t = 100;
 int delay = 0;
 int delay_t = 0;
 int atten = 0;
@@ -85,6 +98,7 @@ int freq = 30000000;
 int freq_t = 30000000;
 int phase = 0;
 int phase_t = 0;
+int dac_phase_delay = 0;
 
 float DB[11] = {
 1000,
@@ -97,7 +111,7 @@ float DB[11] = {
 199,
 158,
 126,
-100};
+100 };
 
 void AD9959_WriteData(uint8_t RegisterAddress, uint8_t NumberofRegisters, uint8_t *RegisterData)
 {
@@ -112,7 +126,7 @@ void AD9959_WriteData(uint8_t RegisterAddress, uint8_t NumberofRegisters, uint8_
 	{
 		SCLK_LOW;
 		if(0x80 == (ControlValue & 0x80))
-		SDIO0_HIGH;
+			SDIO0_HIGH;
 		else
 			SDIO0_LOW;
 		SCLK_HIGH;
@@ -169,7 +183,7 @@ void AD9959_Set_Ampl(uint8_t Channel, uint16_t Ampl)
 {
 	uint8_t CHANNEL[1] = {0x00};
 	CHANNEL[0]=Channel;
-	AD9959_WriteData(0x00,1,CHANNEL); //控制寄存器写入CHn通道�??
+	AD9959_WriteData(0x00,1,CHANNEL); //控制寄存器写入CHn通道�????
 	Write_ACR(Ampl);							//	CHn设定幅度
 }
 void Write_CPOW0(uint16_t Phase)
@@ -184,7 +198,7 @@ void AD9959_Set_Phase(uint8_t Channel,uint16_t Phase)
 {
 	uint8_t CHANNEL[1] = {0x00};
 	CHANNEL[0]=Channel;
-	AD9959_WriteData(0x00,1,CHANNEL); //控制寄存器写入CHn通道，
+	AD9959_WriteData(0x00,1,CHANNEL); //控制寄存器写入CHn通道�??
 	Write_CPOW0(Phase);//CHn设定相位
 }
 
@@ -229,6 +243,46 @@ void IO_Update(void)
 	HAL_Delay(3);
 	UPDATE_LOW;
 }
+
+#define offset 621
+#define dac_length 4 //对应500mV，校准时可能�????要改
+uint16_t scaled_sine_wave_table_Sd[dac_length];
+uint16_t scaled_sine_wave_table_Sm[dac_length];
+void set_dac(uint16_t modulation,int16_t phase)
+{
+	HAL_TIM_Base_Stop(&htim15);
+  HAL_DAC_Stop_DMA(&hdac3, DAC_CHANNEL_1);
+  HAL_DAC_Stop_DMA(&hdac3, DAC_CHANNEL_2);
+
+  uint16_t max_val;
+  uint16_t min_val;
+  phase -= 7;
+  if(phase < 0) phase += 360;
+  if(phase > 360) phase -= 360;
+  max_val=(offset*modulation/100)+offset;
+  min_val=offset-(offset*modulation/100);
+
+  float sine_wave_table[dac_length];
+  float sine_wave_table_phase[dac_length];
+
+  float step = 2 * M_PI / dac_length;
+
+  for (int i = 0; i < dac_length; i++) {
+    sine_wave_table[i] = sinf(i * step);
+    sine_wave_table_phase[i] = sinf(i * step+ ((float)phase)* M_PI/180.0 );
+  }
+  for (int i = 0; i < dac_length; i++) {
+    scaled_sine_wave_table_Sd[i] = (uint16_t)((sine_wave_table[i] + 1) * (max_val - min_val) / 2 + min_val);
+    scaled_sine_wave_table_Sm[i] = (uint16_t)((sine_wave_table_phase[i] + 1) * (max_val - min_val) / 2 + min_val);
+  }
+  HAL_DAC_Start_DMA(&hdac3, DAC_CHANNEL_1,scaled_sine_wave_table_Sd, dac_length / 2, DAC_ALIGN_12B_R);
+  HAL_DAC_Start_DMA(&hdac3, DAC_CHANNEL_2,scaled_sine_wave_table_Sm, dac_length / 2, DAC_ALIGN_12B_R);
+
+  (&htim15)->Instance->ARR = (uint32_t)(19);
+  HAL_OPAMP_Start(&hopamp6);
+  HAL_OPAMP_Start(&hopamp3);
+  HAL_TIM_Base_Start(&htim15);
+}
 /* USER CODE END 0 */
 
 /**
@@ -263,15 +317,20 @@ int main(void)
   MX_DMA_Init();
   MX_SPI1_Init();
   MX_TIM8_Init();
+  MX_DAC3_Init();
+  MX_OPAMP3_Init();
+  MX_OPAMP6_Init();
+  MX_TIM15_Init();
   /* USER CODE BEGIN 2 */
   setup();
   HAL_TIM_Encoder_Start(&htim8, TIM_CHANNEL_ALL);
   GPIO_PinState prev = GPIO_PIN_SET;
   AD9959_Init();
-  AD9959_Set_Ampl(0x30, 605);
-  AD9959_Set_Phase(0x30, 0);
-  AD9959_Set_Freq(0x30, freq);
+  AD9959_Set_Ampl(0xF0, 1000);
+  AD9959_Set_Phase(0xF0, 0);
+  AD9959_Set_Freq(0xF0, freq);
   IO_Update();
+  set_dac(modual, dac_phase_delay);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -371,8 +430,16 @@ int main(void)
 					  break;
 				  }
 			  }
-			  // api
-
+              if(mode < 2)
+			  {
+            	  modual = 0;
+            	  set_dac(modual,dac_phase_delay );
+			  }
+              else
+              {
+            	  modual = 100;
+            	  set_dac(modual,dac_phase_delay );
+              }
 			  break;
 		  case 1:
 			  lcd_show_str(100, 145,"AMPL:\n");
@@ -391,8 +458,7 @@ int main(void)
 					  break;
 				  }
 			  }
-			  //need api
-			  AD9959_Set_Ampl(0x30,ampl);
+			  AD9959_Set_Ampl(0xF0, ampl * 580 / 1000);
 			  IO_Update();
 			  break;
 		  case 2:
@@ -412,13 +478,14 @@ int main(void)
 					  break;
 				  }
 			  }
-			  //need api
+			  set_dac(modual, dac_phase_delay);
 			  break;
 		  case 3:
 			  lcd_show_str(100, 145,"DELAY:\n");
 			  while (1)
 			  {
-				  delay = abs((CaptureNumber) / 4 % 6 * 30 + 50);
+				  delay = abs((CaptureNumber) / 4 % 7 * 30 + 50);
+				  if(delay == 230) delay = 0;
 				  if(delay != delay_t)
 				  {
 					  delay_t = delay;
@@ -431,14 +498,15 @@ int main(void)
 					  break;
 				  }
 			  }
-			  //need api
 			  float final_phase = (float)delay * (float)1e-9 * (float)freq ;
 			  int integer = final_phase;
 			  float set_phase = 1 - final_phase + (float)integer + (float)phase/360;
 			  int set_phase_int = set_phase;
 			  set_phase = (set_phase - (float)set_phase_int) * 16383;
-			  AD9959_Set_Phase(0x20, set_phase);
+			  AD9959_Set_Phase(0x80, set_phase);
 			  IO_Update();
+			  dac_phase_delay = delay * 360 / 500 ;
+			  set_dac(modual, dac_phase_delay );
 			  break;
 		  case 4:
 			  lcd_show_str(100, 145,"ATTENUATION:\n");
@@ -457,8 +525,7 @@ int main(void)
 					  break;
 				  }
 			  }
-			  //need api
-			  AD9959_Set_Ampl(0x20,DB[atten / 2] * ampl / 1000);
+			  AD9959_Set_Ampl(0x80, DB[atten / 2] * ampl / 1000);
 			  IO_Update();
 			  break;
 		  case 5:
@@ -478,8 +545,7 @@ int main(void)
 					  break;
 				  }
 			  }
-			  //need api
-			  AD9959_Set_Freq(0x30,freq*1000000);
+			  AD9959_Set_Freq(0xF0, freq * 1000000);
 			  IO_Update();
 			  break;
 		  case 6:
@@ -499,8 +565,7 @@ int main(void)
 					  break;
 				  }
 			  }
-			  //need api
-			  AD9959_Set_Phase(0x20, phase * 16383 / 360);
+			  AD9959_Set_Phase(0x80, phase * 16383 / 360);
 			  IO_Update();
 			  break;
 		  }
@@ -528,7 +593,7 @@ void SystemClock_Config(void)
 
   /** Configure the main internal regulator output voltage
   */
-  HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1);
+  HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1_BOOST);
 
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
@@ -537,8 +602,8 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLM = RCC_PLLM_DIV2;
-  RCC_OscInitStruct.PLL.PLLN = 24;
+  RCC_OscInitStruct.PLL.PLLM = RCC_PLLM_DIV5;
+  RCC_OscInitStruct.PLL.PLLN = 64;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
   RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
@@ -560,6 +625,124 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+}
+
+/**
+  * @brief DAC3 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_DAC3_Init(void)
+{
+
+  /* USER CODE BEGIN DAC3_Init 0 */
+
+  /* USER CODE END DAC3_Init 0 */
+
+  DAC_ChannelConfTypeDef sConfig = {0};
+
+  /* USER CODE BEGIN DAC3_Init 1 */
+
+  /* USER CODE END DAC3_Init 1 */
+
+  /** DAC Initialization
+  */
+  hdac3.Instance = DAC3;
+  if (HAL_DAC_Init(&hdac3) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /** DAC channel OUT1 config
+  */
+  sConfig.DAC_HighFrequency = DAC_HIGH_FREQUENCY_INTERFACE_MODE_AUTOMATIC;
+  sConfig.DAC_DMADoubleDataMode = ENABLE;
+  sConfig.DAC_SignedFormat = DISABLE;
+  sConfig.DAC_SampleAndHold = DAC_SAMPLEANDHOLD_DISABLE;
+  sConfig.DAC_Trigger = DAC_TRIGGER_T15_TRGO;
+  sConfig.DAC_Trigger2 = DAC_TRIGGER_NONE;
+  sConfig.DAC_OutputBuffer = DAC_OUTPUTBUFFER_DISABLE;
+  sConfig.DAC_ConnectOnChipPeripheral = DAC_CHIPCONNECT_INTERNAL;
+  sConfig.DAC_UserTrimming = DAC_TRIMMING_FACTORY;
+  if (HAL_DAC_ConfigChannel(&hdac3, &sConfig, DAC_CHANNEL_1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /** DAC channel OUT2 config
+  */
+  if (HAL_DAC_ConfigChannel(&hdac3, &sConfig, DAC_CHANNEL_2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN DAC3_Init 2 */
+
+  /* USER CODE END DAC3_Init 2 */
+
+}
+
+/**
+  * @brief OPAMP3 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_OPAMP3_Init(void)
+{
+
+  /* USER CODE BEGIN OPAMP3_Init 0 */
+
+  /* USER CODE END OPAMP3_Init 0 */
+
+  /* USER CODE BEGIN OPAMP3_Init 1 */
+
+  /* USER CODE END OPAMP3_Init 1 */
+  hopamp3.Instance = OPAMP3;
+  hopamp3.Init.PowerMode = OPAMP_POWERMODE_HIGHSPEED;
+  hopamp3.Init.Mode = OPAMP_FOLLOWER_MODE;
+  hopamp3.Init.NonInvertingInput = OPAMP_NONINVERTINGINPUT_DAC;
+  hopamp3.Init.InternalOutput = DISABLE;
+  hopamp3.Init.TimerControlledMuxmode = OPAMP_TIMERCONTROLLEDMUXMODE_DISABLE;
+  hopamp3.Init.UserTrimming = OPAMP_TRIMMING_FACTORY;
+  if (HAL_OPAMP_Init(&hopamp3) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN OPAMP3_Init 2 */
+
+  /* USER CODE END OPAMP3_Init 2 */
+
+}
+
+/**
+  * @brief OPAMP6 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_OPAMP6_Init(void)
+{
+
+  /* USER CODE BEGIN OPAMP6_Init 0 */
+
+  /* USER CODE END OPAMP6_Init 0 */
+
+  /* USER CODE BEGIN OPAMP6_Init 1 */
+
+  /* USER CODE END OPAMP6_Init 1 */
+  hopamp6.Instance = OPAMP6;
+  hopamp6.Init.PowerMode = OPAMP_POWERMODE_HIGHSPEED;
+  hopamp6.Init.Mode = OPAMP_FOLLOWER_MODE;
+  hopamp6.Init.NonInvertingInput = OPAMP_NONINVERTINGINPUT_DAC;
+  hopamp6.Init.InternalOutput = DISABLE;
+  hopamp6.Init.TimerControlledMuxmode = OPAMP_TIMERCONTROLLEDMUXMODE_DISABLE;
+  hopamp6.Init.UserTrimming = OPAMP_TRIMMING_FACTORY;
+  if (HAL_OPAMP_Init(&hopamp6) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN OPAMP6_Init 2 */
+
+  /* USER CODE END OPAMP6_Init 2 */
+
 }
 
 /**
@@ -654,6 +837,52 @@ static void MX_TIM8_Init(void)
 }
 
 /**
+  * @brief TIM15 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM15_Init(void)
+{
+
+  /* USER CODE BEGIN TIM15_Init 0 */
+
+  /* USER CODE END TIM15_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM15_Init 1 */
+
+  /* USER CODE END TIM15_Init 1 */
+  htim15.Instance = TIM15;
+  htim15.Init.Prescaler = 0;
+  htim15.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim15.Init.Period = 19;
+  htim15.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim15.Init.RepetitionCounter = 0;
+  htim15.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim15) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim15, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_UPDATE;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim15, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM15_Init 2 */
+
+  /* USER CODE END TIM15_Init 2 */
+
+}
+
+/**
   * Enable DMA controller clock
   */
 static void MX_DMA_Init(void)
@@ -685,8 +914,8 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOF_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOD_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOC, SCLK_Pin|CS_Pin|SDIO0_Pin|UPDATE_Pin
