@@ -21,7 +21,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <math.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -74,13 +74,13 @@ static void MX_OPAMP3_Init(void);
 #define UPDATE_LOW HAL_GPIO_WritePin(GPIOC, 1<<3, GPIO_PIN_RESET)
 #define UPDATE_HIGH HAL_GPIO_WritePin(GPIOC, 1<<3, GPIO_PIN_SET)
 //typedef struct {
-//    // 这里假设csport是一个指向GPIO_TypeDef的指�????????????????
+//    // 这里假设csport是一个指向GPIO_TypeDef的指�???????????????????
 //    GPIO_TypeDef* cs_port;
 //    uint16_t cs_pin;
 //    SPI_TypeDef * SPI_Hanlder;
 //
-//    // 在这里添加其他你�????????????????要的变量
-//    // 例如�????????????????
+//    // 在这里添加其他你�???????????????????要的变量
+//    // 例如�???????????????????
 //    // uint16_t cspin;
 //} AD9959_Handler;
 //
@@ -209,7 +209,7 @@ void AD9959_WriteData(uint8_t RegisterAddress, uint8_t NumberofRegisters, uint8_
 }
 void Write_CFTW0(uint32_t fre)
 {
-		uint8_t CFTW0_DATA[4] ={0x00,0x00,0x00,0x00};	//�м����?????????
+		uint8_t CFTW0_DATA[4] ={0x00,0x00,0x00,0x00};	//�м����????????????
 	  uint32_t Temp;
 	  Temp=(uint32_t)fre * 4294967296 / 500000000;
 	  CFTW0_DATA[3]=(uint8_t)Temp;
@@ -301,17 +301,17 @@ void AD9959_Init(void)
 //
 //	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_5|GPIO_Pin_2|GPIO_Pin_7|GPIO_Pin_6|GPIO_Pin_8|GPIO_Pin_9|GPIO_Pin_10;//初始化管脚PA2.3.4.5.6.7.8.9.10
 //	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 		 //推挽输出
-//	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;		 //IO口�?�度�????????50MHz
+//	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;		 //IO口�?�度�???????????50MHz
 //	GPIO_Init(GPIOA, &GPIO_InitStructure);					 //根据设定参数初始化GPIOA
 //
 //	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_10;//初始化管脚PB0.1.10
 //	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 		 //推挽输出
-//	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;		 //IO口�?�度�????????2MHz
+//	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;		 //IO口�?�度�???????????2MHz
 //	GPIO_Init(GPIOB, &GPIO_InitStructure);					 //根据设定参数初始化GPIOB
 //
 //	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;	//初始化管脚PC0
 //	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP; 		 //推挽输出
-//	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;		 //IO口�?�度�????????2MHz
+//	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;		 //IO口�?�度�???????????2MHz
 //	GPIO_Init(GPIOC, &GPIO_InitStructure);					 //根据设定参数初始化GPIOC
 //
 	Intserve();  //IO口电平状态初始化
@@ -333,54 +333,38 @@ void IO_Update(void)
 	HAL_Delay(3);
 	UPDATE_LOW;
 }
-#define length 10
-uint16_t hsdac_buffer[10] = {714, 791, 803, 745, 640, 527, 450, 438, 496, 601};
-void set_dac(uint16_t offset)
-{
+#define offset 621
+#define dac_length 4 //对应500mV，校准时可能�??要改
+uint16_t scaled_sine_wave_table_Sd[dac_length];
+uint16_t scaled_sine_wave_table_Sm[dac_length];
+void set_dac(uint16_t modulation,uint16_t phase) {
+  uint16_t max_val;
+  uint16_t min_val;
 
-//	  uint32_t temp1[length];
-//	  uint32_t temp2[length];
-//	  uint16_t hsdac_buffer[length];
-//	  for (int i = 0; i < length; ++i)
-//	  {
-//		  temp1[i] = (1llu<<32) / length * i;
-//	  }
-//
-//	  HAL_CORDIC_CalculateZO(&hcordic, temp1, temp2, length,10);
-//	  for (int i= 0 ; i < length; ++i)
-//	  {
-//		  hsdac_buffer[i] = (temp2[i] + (1<< 31))>>21 / 10;
-//		  hsdac_buffer[i] += offset;
-//	  }
-	  HAL_DAC_Start_DMA(&hdac3, DAC_CHANNEL_1, hsdac_buffer, length/2, DAC_ALIGN_12B_R);
-	  HAL_DAC_Start_DMA(&hdac3, DAC_CHANNEL_2, hsdac_buffer, length/2, DAC_ALIGN_12B_R);
-//	  uint16_t dither[1000];
-//	  int time_dither = 4;
-//	  float e = 0;
-//	  for (int i = 0 ; i < 1000 ; ++i)
-//	  {
-//
-//		  e /= 2;
-//		  if (e <1.14 )
-//		  {
-//
-//			  dither[i] = 2;
-//			  e +=2 ;
-//		  }
-//		  else
-//		  {
-//			  dither[i] = 1;
-//			  e += 1;
-//		  }
-//	  }
-//	  uint16_t dither[10] = {4,4,4,4,5,4,4,4,4,5};
-//	  HAL_TIM_Base_Start_DMA(&htim15 ,dither , 1000 );
-	  //(&htim15)->Instance->ARR = (uint32_t)(4);
-//	  HAL_TIM_PWM_Start(&htim15, TIM_CHANNEL_1);
-	  HAL_OPAMP_Start(&hopamp3);
-	  HAL_OPAMP_Start(&hopamp6);
-	  HAL_TIM_Base_Start(&htim15);
+  max_val=(offset*modulation/100)+offset;
+  min_val=offset-(offset*modulation/100);
 
+  float sine_wave_table[dac_length];
+  float sine_wave_table_phase[dac_length];
+
+  float step = 2 * M_PI / dac_length;
+
+  for (int i = 0; i < dac_length; i++) {
+    sine_wave_table[i] = sinf(i * step);
+    sine_wave_table_phase[i] = sinf(i * step+ phase* M_PI/180.0 );
+
+  }
+  for (int i = 0; i < dac_length; i++) {
+    scaled_sine_wave_table_Sd[i] = (uint16_t)((sine_wave_table[i] + 1) * (max_val - min_val) / 2 + min_val);
+    scaled_sine_wave_table_Sm[i] = (uint16_t)((sine_wave_table_phase[i] + 1) * (max_val - min_val) / 2 + min_val);
+  }
+  HAL_DAC_Start_DMA(&hdac3, DAC_CHANNEL_1,scaled_sine_wave_table_Sd, dac_length / 2, DAC_ALIGN_12B_R);
+  HAL_DAC_Start_DMA(&hdac3, DAC_CHANNEL_2,scaled_sine_wave_table_Sd, dac_length / 2, DAC_ALIGN_12B_R);
+
+  (&htim15)->Instance->ARR = (uint32_t)(19);
+ HAL_OPAMP_Start(&hopamp6);
+ HAL_OPAMP_Start(&hopamp3);
+ HAL_TIM_Base_Start(&htim15);
 }
 //void ad9959_set(uint32_t freq, uint16_t amp , uint16_t t , uint16_t phase)
 //{
@@ -451,7 +435,7 @@ int main(void)
   AD9959_Set_Phase(0x10, 0);
   AD9959_Set_Phase(0x20, 0);
   IO_Update();
-  set_dac(0);
+  set_dac(30,0);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -478,7 +462,7 @@ void SystemClock_Config(void)
 
   /** Configure the main internal regulator output voltage
   */
-  HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1);
+  HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1_BOOST);
 
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
@@ -487,8 +471,8 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLM = RCC_PLLM_DIV2;
-  RCC_OscInitStruct.PLL.PLLN = 16;
+  RCC_OscInitStruct.PLL.PLLM = RCC_PLLM_DIV5;
+  RCC_OscInitStruct.PLL.PLLN = 64;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
   RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
@@ -506,7 +490,7 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_3) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK)
   {
     Error_Handler();
   }
@@ -678,7 +662,7 @@ static void MX_TIM15_Init(void)
   htim15.Instance = TIM15;
   htim15.Init.Prescaler = 0;
   htim15.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim15.Init.Period = 9;
+  htim15.Init.Period = 19;
   htim15.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim15.Init.RepetitionCounter = 0;
   htim15.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
