@@ -121,7 +121,10 @@ void setup()
   lcd.printf("5.FREQUENCY\n");
   lcd.setCursor(115, 125);
   lcd.setTextColor(ST77XX_CYAN, ST77XX_BLACK);
-  lcd.printf("6.INIT PHASE\n");
+  lcd.printf("6.CARRIER PHASE\n");
+  lcd.setCursor(115, 145);
+  lcd.setTextColor(ST77XX_CYAN, ST77XX_BLACK);
+  lcd.printf("7.SIGNAL PHASE\n");
 
   lcd.setTextColor(ST77XX_RED, ST77XX_BLACK);
 
@@ -149,10 +152,10 @@ void lcd_show_picture(uint16_t x, uint16_t y , uint16_t col , uint16_t row , con
 }
 void lcd_show_num(int n)
 {
-	lcd.fillRect(150, 165, 230, 20, BLACK);
-	lcd.setCursor(150, 165);
+	lcd.fillRect(150, 185, 230, 20, BLACK);
+	lcd.setCursor(150, 185);
 	lcd.printf("   ");
-	lcd.setCursor(150, 165);
+	lcd.setCursor(150, 185);
 	lcd.print(n);
 }
 void lcd_show_str(int16_t x, int16_t y,const char * lmf)

@@ -83,23 +83,23 @@ static void MX_TIM15_Init(void);
 #define UPDATE_LOW HAL_GPIO_WritePin(GPIOC, 1<<3, GPIO_PIN_RESET)
 #define UPDATE_HIGH HAL_GPIO_WritePin(GPIOC, 1<<3, GPIO_PIN_SET)
 
-
 int mode = 0;
 int mode_t = 0;
-int ampl = 580;
-int ampl_t = 580;
+int ampl = 1000;
+int ampl_t = 1000;
 int modual = 100;
 int modual_t = 100;
 int delay = 0;
 int delay_t = 0;
 int atten = 0;
 int atten_t = 0;
-int freq = 30000000;
-int freq_t = 30000000;
+uint32_t freq = 30;
+uint32_t freq_t = 30;
 int phase = 0;
 int phase_t = 0;
-int dac_phase_delay = 0;
-
+int dac_phase = 0;
+int dds_phase = 0;
+float freq_acu[11] ={102.5,103,104,106,106,107,108,108,109,110,111};
 float DB[11] = {
 1000,
 891,
@@ -179,12 +179,12 @@ void Write_ACR(uint16_t Ampl)
     AD9959_WriteData(0x06, 3, ACR_DATA); //ACR address 0x06.CHn设定幅度
 }
 
-void AD9959_Set_Ampl(uint8_t Channel, uint16_t Ampl)
+void AD9959_Set_Ampl(uint8_t Channel, uint32_t Ampl, int freq)
 {
 	uint8_t CHANNEL[1] = {0x00};
 	CHANNEL[0]=Channel;
-	AD9959_WriteData(0x00,1,CHANNEL); //控制寄存器写入CHn通道�????
-	Write_ACR(Ampl);							//	CHn设定幅度
+	AD9959_WriteData(0x00,1,CHANNEL); //控制寄存器写入CHn通道�??????
+	Write_ACR((uint16_t)((float)Ampl * ((float)freq_acu[freq-30])/180) );							//	CHn设定幅度
 }
 void Write_CPOW0(uint16_t Phase)
 {
@@ -198,7 +198,7 @@ void AD9959_Set_Phase(uint8_t Channel,uint16_t Phase)
 {
 	uint8_t CHANNEL[1] = {0x00};
 	CHANNEL[0]=Channel;
-	AD9959_WriteData(0x00,1,CHANNEL); //控制寄存器写入CHn通道�??
+	AD9959_WriteData(0x00,1,CHANNEL); //控制寄存器写入CHn通道�????
 	Write_CPOW0(Phase);//CHn设定相位
 }
 
@@ -244,13 +244,14 @@ void IO_Update(void)
 	UPDATE_LOW;
 }
 
-#define offset 621
-#define dac_length 4 //对应500mV，校准时可能�????要改
+#define offset 2048
+#define dac_length 4 //对应500mV，校准时可能�??????要改
 uint16_t scaled_sine_wave_table_Sd[dac_length];
 uint16_t scaled_sine_wave_table_Sm[dac_length];
+
 void set_dac(uint16_t modulation,int16_t phase)
 {
-	HAL_TIM_Base_Stop(&htim15);
+  HAL_TIM_Base_Stop(&htim15);
   HAL_DAC_Stop_DMA(&hdac3, DAC_CHANNEL_1);
   HAL_DAC_Stop_DMA(&hdac3, DAC_CHANNEL_2);
 
@@ -268,8 +269,8 @@ void set_dac(uint16_t modulation,int16_t phase)
   float step = 2 * M_PI / dac_length;
 
   for (int i = 0; i < dac_length; i++) {
-    sine_wave_table[i] = sinf(i * step);
-    sine_wave_table_phase[i] = sinf(i * step+ ((float)phase)* M_PI/180.0 );
+    sine_wave_table[i] = sinf(i * step+ ((float)1) * M_PI/180.0 );
+    sine_wave_table_phase[i] = sinf(i * step + ((float)phase + 1) * M_PI/180.0 );
   }
   for (int i = 0; i < dac_length; i++) {
     scaled_sine_wave_table_Sd[i] = (uint16_t)((sine_wave_table[i] + 1) * (max_val - min_val) / 2 + min_val);
@@ -326,11 +327,11 @@ int main(void)
   HAL_TIM_Encoder_Start(&htim8, TIM_CHANNEL_ALL);
   GPIO_PinState prev = GPIO_PIN_SET;
   AD9959_Init();
-  AD9959_Set_Ampl(0xF0, 1000);
+  AD9959_Set_Ampl(0xF0, ampl, freq);
   AD9959_Set_Phase(0xF0, 0);
-  AD9959_Set_Freq(0xF0, freq);
+  AD9959_Set_Freq(0xF0, freq * 1000000);
   IO_Update();
-  set_dac(modual, dac_phase_delay);
+  set_dac(0, dac_phase);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -339,7 +340,7 @@ int main(void)
   {
 	  int Direction = __HAL_TIM_IS_TIM_COUNTING_DOWN(&htim8);   //读取电机转动方向
 	  int CaptureNumber = (short)__HAL_TIM_GET_COUNTER(&htim8);
-	  int counter = CaptureNumber / 4 % 7 ;
+	  int counter = CaptureNumber / 4 % 8 ;
 
 	  switch(counter)
 	  {
@@ -351,6 +352,7 @@ int main(void)
 		  lcd_show_picture(101, 85 , 12, 20, gImage_black);
 		  lcd_show_picture(101, 105 , 12, 20, gImage_black);
 		  lcd_show_picture(101, 125 , 12, 20, gImage_black);
+		  lcd_show_picture(101, 145 , 12, 20, gImage_black);
 		  break;
 	  case 1:
 		  lcd_show_picture(101, 25 , 12, 20, MenuCursor16x16);
@@ -360,6 +362,7 @@ int main(void)
 		  lcd_show_picture(101, 85 , 12, 20, gImage_black);
 		  lcd_show_picture(101, 105 , 12, 20, gImage_black);
 		  lcd_show_picture(101, 125 , 12, 20, gImage_black);
+		  lcd_show_picture(101, 145 , 12, 20, gImage_black);
 		  break;
 	  case 2:
 		  lcd_show_picture(101, 45 , 12, 20, MenuCursor16x16);
@@ -369,6 +372,7 @@ int main(void)
 		  lcd_show_picture(101, 85 , 12, 20, gImage_black);
 		  lcd_show_picture(101, 105 , 12, 20, gImage_black);
 		  lcd_show_picture(101, 125 , 12, 20, gImage_black);
+		  lcd_show_picture(101, 145 , 12, 20, gImage_black);
 		  break;
 	  case 3:
 		  lcd_show_picture(101, 65 , 12, 20, MenuCursor16x16);
@@ -378,6 +382,7 @@ int main(void)
 		  lcd_show_picture(101, 85 , 12, 20, gImage_black);
 		  lcd_show_picture(101, 105 , 12, 20, gImage_black);
 		  lcd_show_picture(101, 125 , 12, 20, gImage_black);
+		  lcd_show_picture(101, 145 , 12, 20, gImage_black);
 		  break;
 	  case 4:
 		  lcd_show_picture(101, 85 , 12, 20, MenuCursor16x16);
@@ -387,6 +392,7 @@ int main(void)
 		  lcd_show_picture(101, 5 , 12, 20, gImage_black);
 		  lcd_show_picture(101, 105 , 12, 20, gImage_black);
 		  lcd_show_picture(101, 125 , 12, 20, gImage_black);
+		  lcd_show_picture(101, 145 , 12, 20, gImage_black);
 		  break;
 	  case 5:
 		  lcd_show_picture(101, 105 , 12, 20, MenuCursor16x16);
@@ -396,6 +402,7 @@ int main(void)
 		  lcd_show_picture(101, 85 , 12, 20, gImage_black);
 		  lcd_show_picture(101, 5 , 12, 20, gImage_black);
 		  lcd_show_picture(101, 125 , 12, 20, gImage_black);
+		  lcd_show_picture(101, 145 , 12, 20, gImage_black);
 		  break;
 	  case 6:
 		  lcd_show_picture(101, 125 , 12, 20, MenuCursor16x16);
@@ -405,6 +412,17 @@ int main(void)
 		  lcd_show_picture(101, 85 , 12, 20, gImage_black);
 		  lcd_show_picture(101, 105 , 12, 20, gImage_black);
 		  lcd_show_picture(101, 5 , 12, 20, gImage_black);
+		  lcd_show_picture(101, 145 , 12, 20, gImage_black);
+		  break;
+	  case 7:
+		  lcd_show_picture(101, 145 , 12, 20, MenuCursor16x16);
+		  lcd_show_picture(101, 25 , 12, 20, gImage_black);
+		  lcd_show_picture(101, 45 , 12, 20, gImage_black);
+		  lcd_show_picture(101, 65 , 12, 20, gImage_black);
+		  lcd_show_picture(101, 85 , 12, 20, gImage_black);
+		  lcd_show_picture(101, 105 , 12, 20, gImage_black);
+		  lcd_show_picture(101, 125 , 12, 20, gImage_black);
+		  lcd_show_picture(101, 0 , 12, 20, gImage_black);
 		  break;
 	  }
 	  GPIO_PinState curr = HAL_GPIO_ReadPin(GPIOC, 1<<13);
@@ -413,36 +431,36 @@ int main(void)
 		  switch(counter)
 		  {
 		  case 0:
-			  lcd_show_str(100, 145,"MODE:\n");
+			  lcd_show_str(100, 165,"MODE:\n");
 			  while(1)
 			  {
 				  mode = abs((CaptureNumber) / 4 % 2 + 1);
 				  if(mode != mode_t)
 				  {
 					  mode_t = mode;
-					  if (mode < 2) lcd_show_str(101,165,"CW");
-					  else lcd_show_str(101,165,"AM");
+					  if (mode < 2) lcd_show_str(101,185,"CW");
+					  else lcd_show_str(101,185,"AM");
 				  }
 				  CaptureNumber = (short)__HAL_TIM_GET_COUNTER(&htim8);
 				  if (HAL_GPIO_ReadPin(GPIOD, 1<<2) == GPIO_PIN_RESET)
 				  {
-					  lcd_show_str(101,185,"CONFIRM?\n");
+					  lcd_show_str(101,205,"CONFIRM?\n");
 					  break;
 				  }
 			  }
               if(mode < 2)
 			  {
             	  modual = 0;
-            	  set_dac(modual,dac_phase_delay );
+            	  set_dac(modual,dac_phase );
 			  }
               else
               {
             	  modual = 100;
-            	  set_dac(modual,dac_phase_delay );
+            	  set_dac(modual,dac_phase );
               }
 			  break;
 		  case 1:
-			  lcd_show_str(100, 145,"AMPL:\n");
+			  lcd_show_str(100, 165,"AMPL:\n");
 			  while (1)
 			  {
 				  ampl = abs((CaptureNumber) / 4 % 10 * 100 + 100);
@@ -454,15 +472,15 @@ int main(void)
 				  CaptureNumber = (short)__HAL_TIM_GET_COUNTER(&htim8);
 				  if (HAL_GPIO_ReadPin(GPIOD, 1<<2) == GPIO_PIN_RESET)
 				  {
-					  lcd_show_str(101,185,"CONFIRM?\n");
+					  lcd_show_str(101,205,"CONFIRM?\n");
 					  break;
 				  }
 			  }
-			  AD9959_Set_Ampl(0xF0, ampl * 580 / 1000);
+			  AD9959_Set_Ampl(0xF0, ampl, freq );
 			  IO_Update();
 			  break;
 		  case 2:
-			  lcd_show_str(100, 145,"MODULATION:\n");
+			  lcd_show_str(100, 165,"MODULATION:\n");
 			  while (1)
 			  {
 				  modual = abs((((CaptureNumber) / 4 )% 7) * 10 + 30);
@@ -474,14 +492,14 @@ int main(void)
 				  CaptureNumber = (short)__HAL_TIM_GET_COUNTER(&htim8);
 				  if (HAL_GPIO_ReadPin(GPIOD, 1<<2) == GPIO_PIN_RESET)
 				  {
-					  lcd_show_str(101,185,"CONFIRM?\n");
+					  lcd_show_str(101,205,"CONFIRM?\n");
 					  break;
 				  }
 			  }
-			  set_dac(modual, dac_phase_delay);
+			  set_dac(modual, dac_phase);
 			  break;
 		  case 3:
-			  lcd_show_str(100, 145,"DELAY:\n");
+			  lcd_show_str(100, 165,"DELAY:\n");
 			  while (1)
 			  {
 				  delay = abs((CaptureNumber) / 4 % 7 * 30 + 50);
@@ -494,7 +512,7 @@ int main(void)
 				  CaptureNumber = (short)__HAL_TIM_GET_COUNTER(&htim8);
 				  if (HAL_GPIO_ReadPin(GPIOD, 1<<2) == GPIO_PIN_RESET)
 				  {
-					  lcd_show_str(101,185,"CONFIRM?\n");
+					  lcd_show_str(101,205,"CONFIRM?\n");
 					  break;
 				  }
 			  }
@@ -502,14 +520,14 @@ int main(void)
 			  int integer = final_phase;
 			  float set_phase = 1 - final_phase + (float)integer + (float)phase/360;
 			  int set_phase_int = set_phase;
-			  set_phase = (set_phase - (float)set_phase_int) * 16383;
-			  AD9959_Set_Phase(0x80, set_phase);
+			  dds_phase = (set_phase - (float)set_phase_int) * 16383;
+			  AD9959_Set_Phase(0x80, dds_phase);
 			  IO_Update();
-			  dac_phase_delay = delay * 360 / 500 ;
-			  set_dac(modual, dac_phase_delay );
+			  dac_phase = delay * 360 / 500 ;
+			  set_dac(modual, dac_phase);
 			  break;
 		  case 4:
-			  lcd_show_str(100, 145,"ATTENUATION:\n");
+			  lcd_show_str(100, 165,"ATTENUATION:\n");
 			  while (1)
 			  {
 				  atten = abs((CaptureNumber) / 4 % 11 * 2);
@@ -521,15 +539,15 @@ int main(void)
 				  CaptureNumber = (short)__HAL_TIM_GET_COUNTER(&htim8);
 				  if (HAL_GPIO_ReadPin(GPIOD, 1<<2) == GPIO_PIN_RESET)
 				  {
-					  lcd_show_str(101,185,"CONFIRM?\n");
+					  lcd_show_str(101,205,"CONFIRM?\n");
 					  break;
 				  }
 			  }
-			  AD9959_Set_Ampl(0x80, DB[atten / 2] * ampl / 1000);
+			  AD9959_Set_Ampl(0x80, DB[atten / 2] * ampl / 1000, freq);
 			  IO_Update();
 			  break;
 		  case 5:
-			  lcd_show_str(100, 145,"FREQUENCY:\n");
+			  lcd_show_str(100, 165,"FREQUENCY:\n");
 			  while (1)
 			  {
 				  freq = abs((CaptureNumber) / 4 % 11 + 30);
@@ -541,15 +559,16 @@ int main(void)
 				  CaptureNumber = (short)__HAL_TIM_GET_COUNTER(&htim8);
 				  if (HAL_GPIO_ReadPin(GPIOD, 1<<2) == GPIO_PIN_RESET)
 				  {
-					  lcd_show_str(101,185,"CONFIRM?\n");
+					  lcd_show_str(101,205,"CONFIRM?\n");
 					  break;
 				  }
 			  }
 			  AD9959_Set_Freq(0xF0, freq * 1000000);
+			  AD9959_Set_Ampl(0xF0, ampl, freq );
 			  IO_Update();
 			  break;
 		  case 6:
-			  lcd_show_str(100, 145,"INIT PHASE\n");
+			  lcd_show_str(100, 165,"CARRIER PHASE\n");
 			  while (1)
 			  {
 				  phase = abs((CaptureNumber) / 4 % 7 * 30);
@@ -561,17 +580,38 @@ int main(void)
 				  CaptureNumber = (short)__HAL_TIM_GET_COUNTER(&htim8);
 				  if (HAL_GPIO_ReadPin(GPIOD, 1<<2) == GPIO_PIN_RESET)
 				  {
-					  lcd_show_str(101,185,"CONFIRM?\n");
+					  lcd_show_str(101,205,"CONFIRM?\n");
 					  break;
 				  }
 			  }
-			  AD9959_Set_Phase(0x80, phase * 16383 / 360);
+			  dds_phase = phase;
+			  AD9959_Set_Phase(0x80, dds_phase * 16383 / 360);
 			  IO_Update();
+			  break;
+		  case 7:
+			  lcd_show_str(100, 165,"SIGNAL PHASE\n");
+			  while (1)
+			  {
+				  phase = abs((CaptureNumber) / 4 % 7 * 30);
+				  if(phase != phase_t)
+				  {
+					  phase_t = phase;
+					  lcd_show_num(phase);
+				  }
+				  CaptureNumber = (short)__HAL_TIM_GET_COUNTER(&htim8);
+				  if (HAL_GPIO_ReadPin(GPIOD, 1<<2) == GPIO_PIN_RESET)
+				  {
+					  lcd_show_str(101,205,"CONFIRM?\n");
+					  break;
+				  }
+			  }
+			  dac_phase = phase;
+			  set_dac(modual, dac_phase);
 			  break;
 		  }
 		  while(HAL_GPIO_ReadPin(GPIOC, 1<<13) != 0)		  ;
 		  //lcd_show_picture(101, 105, 240, 100, gImage_black_big);
-		  lcd_show_black(100, 145, 239, 100);
+		  lcd_show_black(100, 165, 239, 100);
 	  }
 	  prev = curr;
 
