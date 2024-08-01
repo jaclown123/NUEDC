@@ -83,6 +83,7 @@ static void MX_TIM15_Init(void);
 #define UPDATE_LOW HAL_GPIO_WritePin(GPIOC, 1<<3, GPIO_PIN_RESET)
 #define UPDATE_HIGH HAL_GPIO_WritePin(GPIOC, 1<<3, GPIO_PIN_SET)
 
+int high_cur_flag = 0;
 int mode = 0;
 int mode_t = 0;
 int ampl = 1000;
@@ -101,9 +102,10 @@ int dac_phase = 0;
 int dds_phase = 0;
 int dac_phase_1 = 0;
 int dds_phase_1 = 0;
-int init_phase = 14200;
+int init_phase = 0;//14200;
 int total = 0;
-float freq_acu[11] ={102.5,103,104,106,106,107,108,108,109,110,111};
+float freq_acu_1[11] ={102.5,103,104,106,106,107,108,108,109,110,110.5};
+float freq_acu_2[11] ={102  ,102,103,104,105,106,106,107,107.5,108,109};
 float DB[11] = {
 1000,
 891,
@@ -188,7 +190,10 @@ void AD9959_Set_Ampl(uint8_t Channel, uint32_t Ampl, int freq)
 	uint8_t CHANNEL[1] = {0x00};
 	CHANNEL[0]=Channel;
 	AD9959_WriteData(0x00,1,CHANNEL); //控制寄存器写入CHn通道�??????
-	Write_ACR((uint16_t)((float)Ampl * ((float)freq_acu[freq-30])/180) );							//	CHn设定幅度
+	if (Channel == 0x40)
+		Write_ACR((uint16_t)((float)Ampl * ((float)freq_acu_1[freq-30])/180) );
+	if (Channel == 0x80)
+		Write_ACR((uint16_t)((float)Ampl * ((float)freq_acu_2[freq-30])/180) );	//	CHn设定幅度
 }
 void Write_CPOW0(uint16_t Phase)
 {
@@ -331,8 +336,9 @@ int main(void)
   HAL_TIM_Encoder_Start(&htim8, TIM_CHANNEL_ALL);
   GPIO_PinState prev = GPIO_PIN_SET;
   AD9959_Init();
-  AD9959_Set_Ampl(0xF0, ampl, freq);
-  AD9959_Set_Phase(0x40, 14200);
+  AD9959_Set_Ampl(0x40, ampl, freq);
+  AD9959_Set_Ampl(0x80, ampl, freq);
+  AD9959_Set_Phase(0x40, 0);
   AD9959_Set_Freq(0xF0, freq * 1000000);
   IO_Update();
   set_dac(0, dac_phase);
@@ -480,7 +486,8 @@ int main(void)
 					  break;
 				  }
 			  }
-			  AD9959_Set_Ampl(0xF0, ampl, freq );
+			  AD9959_Set_Ampl(0x40, ampl, freq );
+			  AD9959_Set_Ampl(0x80, ampl, freq );
 			  IO_Update();
 			  break;
 		  case 2:
@@ -500,7 +507,7 @@ int main(void)
 					  break;
 				  }
 			  }
-			  set_dac(modual, dac_phase);
+			  set_dac(modual, dac_phase + dac_phase_1);
 			  break;
 		  case 3:
 			  lcd_show_str(100, 165,"DELAY:\n");
@@ -574,8 +581,9 @@ int main(void)
 					  break;
 				  }
 			  }
-			  AD9959_Set_Freq(0xF0, freq * 1000000);
-			  AD9959_Set_Ampl(0xF0, ampl, freq );
+			  AD9959_Set_Freq(0xC0, freq * 1000000);
+			  AD9959_Set_Ampl(0x40, ampl, freq );
+			  AD9959_Set_Ampl(0x80, ampl, freq );
 			  IO_Update();
 			  break;
 		  case 6:

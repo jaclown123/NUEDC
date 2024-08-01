@@ -125,7 +125,12 @@ void setup()
   lcd.setCursor(115, 145);
   lcd.setTextColor(ST77XX_CYAN, ST77XX_BLACK);
   lcd.printf("7.SIGNAL PHASE\n");
-
+//  lcd.setCursor(5, 85);
+//  lcd.setTextColor(ST77XX_BLACK, ST77XX_WHITE);
+//  lcd.printf(" N");
+//  lcd.setCursor(5, 105);
+//  lcd.setTextColor(ST77XX_WHITE, ST77XX_BLACK);
+//  lcd.printf(" H");
   lcd.setTextColor(ST77XX_RED, ST77XX_BLACK);
 
   //lcd.printf("Jerry's embedded\n");

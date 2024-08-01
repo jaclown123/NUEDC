@@ -84,8 +84,8 @@ all: main-build
 main-build: ez_exam.elf secondary-outputs
 
 # Tool invocations
-ez_exam.elf ez_exam.map: $(OBJS) $(USER_OBJS) D:\my_write_stm32cube\ez_exam\STM32G474RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-g++ -o "ez_exam.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"D:\my_write_stm32cube\ez_exam\STM32G474RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="ez_exam.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+ez_exam.elf ez_exam.map: $(OBJS) $(USER_OBJS) C:\Users\linyixin\Documents\GitHub\NUEDC\ez_exam\STM32G474RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-g++ -o "ez_exam.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\linyixin\Documents\GitHub\NUEDC\ez_exam\STM32G474RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="ez_exam.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

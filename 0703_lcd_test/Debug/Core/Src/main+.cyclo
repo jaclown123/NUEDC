@@ -3,13 +3,13 @@ C:/Users/linyixin/Desktop/c2406/0708_code_lcd/0703_lcd_lib/Adafruit_GFX.h:171:8:
 C:/Users/linyixin/Desktop/c2406/0708_code_lcd/0703_lcd_lib/Adafruit_SPITFT.h:178:3:Adafruit_SPITFT::~Adafruit_SPITFT()	1
 ../Core/Src/main+.cpp:17:6:void lcd_callback(SpiCmd, uint8_t*, size_t)	6
 ../Core/Src/main+.cpp:95:6:void setup()	1
-../Core/Src/main+.cpp:142:6:void lcd_show_picture(uint16_t, uint16_t, uint16_t, uint16_t, const unsigned char*)	3
-../Core/Src/main+.cpp:153:6:void lcd_show_num(int)	1
-../Core/Src/main+.cpp:161:6:void lcd_show_str(int16_t, int16_t, const char*)	1
-../Core/Src/main+.cpp:167:6:void lcd_show_black(int16_t, int16_t, int16_t, int16_t)	1
-../Core/Src/main+.cpp:171:6:void loop()	1
+../Core/Src/main+.cpp:147:6:void lcd_show_picture(uint16_t, uint16_t, uint16_t, uint16_t, const unsigned char*)	3
+../Core/Src/main+.cpp:158:6:void lcd_show_num(int)	1
+../Core/Src/main+.cpp:166:6:void lcd_show_str(int16_t, int16_t, const char*)	1
+../Core/Src/main+.cpp:172:6:void lcd_show_black(int16_t, int16_t, int16_t, int16_t)	1
+../Core/Src/main+.cpp:176:6:void loop()	1
 C:/Users/linyixin/Desktop/c2406/0708_code_lcd/0703_lcd_lib/Adafruit_ST77xx.h:91:7:Adafruit_ST77xx::~Adafruit_ST77xx()	1
 C:/Users/linyixin/Desktop/c2406/0708_code_lcd/0703_lcd_lib/Adafruit_ST7789.h:7:7:Adafruit_ST7789::~Adafruit_ST7789()	1
-../Core/Src/main+.cpp:174:1:void __static_initialization_and_destruction_0(int, int)	5
-../Core/Src/main+.cpp:174:1:cpp)	1
-../Core/Src/main+.cpp:174:1:cpp)	1
+../Core/Src/main+.cpp:179:1:void __static_initialization_and_destruction_0(int, int)	5
+../Core/Src/main+.cpp:179:1:cpp)	1
+../Core/Src/main+.cpp:179:1:cpp)	1
