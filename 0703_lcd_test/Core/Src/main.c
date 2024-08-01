@@ -87,8 +87,8 @@ int mode = 0;
 int mode_t = 0;
 int ampl = 1000;
 int ampl_t = 1000;
-int modual = 100;
-int modual_t = 100;
+int modual = 0;
+int modual_t = 0;
 int delay = 0;
 int delay_t = 0;
 int atten = 0;
@@ -99,6 +99,10 @@ int phase = 0;
 int phase_t = 0;
 int dac_phase = 0;
 int dds_phase = 0;
+int dac_phase_1 = 0;
+int dds_phase_1 = 0;
+int init_phase = 14200;
+int total = 0;
 float freq_acu[11] ={102.5,103,104,106,106,107,108,108,109,110,111};
 float DB[11] = {
 1000,
@@ -328,7 +332,7 @@ int main(void)
   GPIO_PinState prev = GPIO_PIN_SET;
   AD9959_Init();
   AD9959_Set_Ampl(0xF0, ampl, freq);
-  AD9959_Set_Phase(0xF0, 0);
+  AD9959_Set_Phase(0x40, 14200);
   AD9959_Set_Freq(0xF0, freq * 1000000);
   IO_Update();
   set_dac(0, dac_phase);
@@ -516,15 +520,22 @@ int main(void)
 					  break;
 				  }
 			  }
-			  float final_phase = (float)delay * (float)1e-9 * (float)freq ;
+			  float final_phase = (float)delay * (float)1e-3 * (float)freq ;
 			  int integer = final_phase;
-			  float set_phase = 1 - final_phase + (float)integer + (float)phase/360;
+			  float set_phase = 1 - final_phase + (float)integer /*+ (float)phase/360*/;
 			  int set_phase_int = set_phase;
+
 			  dds_phase = (set_phase - (float)set_phase_int) * 16383;
-			  AD9959_Set_Phase(0x80, dds_phase);
+			  //dds_phase = dds_phase - (int)((float)freq * 16383 * 4.4 / 1000);
+			  if(dds_phase > 16383)dds_phase -= 16383;
+			  if(dds_phase < 16383)dds_phase += 16383;
+			  total = dds_phase + dds_phase_1 + init_phase * freq / 30;
+			  if(total > 16383) total -=16383;
+			  if(total < 0)     total +=16383;
+			  AD9959_Set_Phase(0x40, total);
 			  IO_Update();
 			  dac_phase = delay * 360 / 500 ;
-			  set_dac(modual, dac_phase);
+			  set_dac(modual, dac_phase + dac_phase_1);
 			  break;
 		  case 4:
 			  lcd_show_str(100, 165,"ATTENUATION:\n");
@@ -584,8 +595,14 @@ int main(void)
 					  break;
 				  }
 			  }
-			  dds_phase = phase;
-			  AD9959_Set_Phase(0x80, dds_phase * 16383 / 360);
+			  dds_phase_1 = phase * 16383 / 360;
+			  //dds_phase_1 -= (int)((float)freq * 16383 * 4.4 / 1000);
+              if(dds_phase_1 > 16383) dds_phase_1 -=16383;
+              if(dds_phase_1 < 0)     dds_phase_1 +=16383;
+              total = dds_phase + dds_phase_1 + init_phase * freq / 30;
+              if(total > 16383) total -=16383;
+			  if(total < 0)     total +=16383;
+			  AD9959_Set_Phase(0x40, total);
 			  IO_Update();
 			  break;
 		  case 7:
@@ -605,8 +622,8 @@ int main(void)
 					  break;
 				  }
 			  }
-			  dac_phase = phase;
-			  set_dac(modual, dac_phase);
+			  dac_phase_1 = phase ;
+			  set_dac(modual, dac_phase + dac_phase_1);
 			  break;
 		  }
 		  while(HAL_GPIO_ReadPin(GPIOC, 1<<13) != 0)		  ;
